@@ -955,6 +955,60 @@ int main(){
 }
 ```
 
+
+# Heap
+
+````cpp
+#define pb push_back
+#define sz(a) int(a.size())
+
+template<typename T>
+class Heap {
+public:
+    vector<T> data;
+    void push(T v) {
+        data.pb(v);
+        heapify_up(sz(data) - 1);
+    }
+    T top() { return data[0]; }
+    bool empty() { return data.empty(); }
+
+    void pop() {
+        swap(data[0], data[sz(data) - 1]);
+        data.pop_back();
+        heapify_down(0);
+    }
+
+private:
+    void heapify_up(int i) {
+        if (i == 0) return;
+
+        int p = parent(i);
+        if (!isSorted(data[p], data[i])) {
+            swap(data[p], data[i]);
+            heapify_up(p);
+        }
+    }
+
+    void heapify_down(int i) {
+        int l = 2 * i + 1;
+        int r = l + 1;
+        int j = i;
+        if (l < sz(data) && isSorted(data[l], data[j])) j = l;
+        if (r < sz(data) && isSorted(data[r], data[j])) j = r;
+
+        if (j != i) {
+            swap(data[i], data[j]);
+            heapify_down(j);
+        }
+    }
+    int parent(int i) { return (i - 1) / 2; }
+    bool isSorted(T& a, T& b) {//FIX ME
+        return a > b;
+    }
+};
+```
+
 # Grafos
 
 ## Recorridos
