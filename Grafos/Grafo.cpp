@@ -1,0 +1,383 @@
+#include <bits/stdc++.h>
+
+#define FIN ios::ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0)
+#define endl '\n'
+#define forn(i,a,b) for(int i = int(a); i < int(b);i++)
+#define pb push_back
+#define all(v) v.begin(),v.end()
+#define sz(a) int(a.size())
+#define coutBool(a) cout << ((a) ? "YES" : "NO")<<endl
+#define mp make_pair
+#define fi first
+#define se second
+#define debug(x) cout<<#x<<" : "<<x<<endl
+
+using namespace std;
+
+using ll = long long;
+using ull = unsigned long long;
+using vi = vector<int>;
+using vvi = vector<vi>;
+using vb = vector<bool>;
+using pi = pair<int, int>;
+
+template<typename T>
+class Graph {
+public:
+    int n;
+    vector<vector<T>> adj;
+    Graph(int n) {
+        this->n = n;
+        adj.resize(n);
+    }
+
+    Graph(int n, vvi& mat) {
+        this->n = n;
+        adj = mat;
+    }
+
+    void add(int u, int v, bool undirected = false) {
+        adj[u].push_back(v);
+        if (undirected)
+            adj[v].push_back(u);
+    }
+
+    void dfs(int u, vb& visited) {
+        cout << u << " ";
+        for (auto v : adj[u]) {
+            if (!visited[v]) {
+                visited[v] = true;
+                dfs(v, visited);
+            }
+        }
+    }
+
+    void dfsComponent(int i, vector<T>& c, vb& u) {
+        u[i] = 1;
+        c.push_back(i);
+        for (T v : adj[i]) {
+            if (!u[v])
+                dfsComponent(v, c, u);
+        }
+    }
+    vector<vector<T>> findComponents() {
+        vb visited(n, false);
+        vector<vector<T>> components;
+        forn(i, 0, n) {
+            if (!visited[i]) {
+                vector<T> component;
+                dfsComponent(i, component, visited);
+                components.push_back(component);
+            }
+        }
+        return components;
+    }
+
+    void findBridges() {
+        int timer = 0;
+        vb visited(n, false);
+        vector<T> tin(n, -1), low(n, -1);
+        for (int i = 0; i < n; ++i) {
+            if (!visited[i])
+                dfsBridges(i, -1, timer, visited, tin, low);
+        }
+    }
+
+    void dfsBridges(int u, int p, int& timer, vb& vis, vector<T>& tin, vector<T>& low) {
+        vis[u] = true;
+        tin[u] = low[u] = timer++;
+        for (int v : adj[u]) {
+            if (v == p) continue;
+            if (vis[v]) {
+                low[u] = min(low[u], tin[v]);
+            }
+            else {
+                dfsBridges(v, u, timer, vis, tin, low);
+                low[u] = min(low[u], low[v]);
+                if (low[v] > tin[u])
+                    IS_BRIDGE(u, v);
+            }
+        }
+    }
+
+    void IS_BRIDGE(int u, int v) {
+        cout << u << " " << v << endl;
+    }
+
+    void findArticulationsPoints() {
+        int timer = 0;
+        vb visited(n, false);
+        vector<T> tin(n, -1), low(n, -1);
+        forn(i, 0, n) {
+            if (!visited[i])
+                dfsArticulations(i, -1, timer, visited, tin, low);
+        }
+    }
+
+    void dfsArticulations(int u, int p, int& timer, vb& vis, vector<T>& tin, vector<T>& low) {
+        vis[u] = true;
+        tin[u] = low[u] = timer++;
+        int c = 0;
+        for (int v : adj[u]) {
+            if (v == p) continue;
+            if (vis[v]) low[u] = min(low[u], tin[v]);
+            else {
+                dfsArticulations(v, u, timer, vis, tin, low);
+                low[u] = min(low[u], low[v]);
+                if (low[v] >= tin[u] && p != -1) IS_CUTPOINT(u);
+                ++c;
+            }
+        }
+        if (p == -1 && c > 1) IS_CUTPOINT(u);
+    }
+
+    void IS_CUTPOINT(int u) {
+        cout << u << endl;
+    }
+
+    vi findCycle() {
+        vi color(n, 0);
+        vi parent(n, -1);
+        vi cycle;
+        int start = -1;
+
+        forn(v, 0, n) {
+            if (color[v] == 0 && dfsCycle(v, color, parent, start)) break;
+        }
+
+        if (start != -1) {
+            cycle.push_back(start);
+            for (int i = parent[start]; i != start; i = parent[i])
+                cycle.push_back(i);
+            cycle.push_back(start);
+            reverse(all(cycle));
+        }
+
+        return cycle;
+    }
+
+    bool dfsCycle(int v, vi& c, vi& p, int& s) {
+        c[v] = 1;
+        for (int u : adj[v]) {
+            if (c[u] == 0) {
+                p[u] = v;
+                if (dfsCycle(u, c, p, s)) return true;
+            }
+            else if (c[u] == 1 && p[v] != u) {
+                s = u;
+                return true;
+            }
+        }
+        c[v] = 2;
+        return false;
+    }
+
+    vi eulerianPath() {
+        // Assuming adj is adjacency matrix
+        vi deg(n);
+        vi path;
+        forn(i, 0, n) {
+            for (int j : adj[i])
+                deg[i]++;
+        }
+
+        int start = 0;
+        while (start < n && !deg[start])
+            start++;
+
+        if (start == n) return path;
+
+        int v1 = -1, v2 = -1;
+        bool bad = false;
+
+        forn(i, 0, n) {
+            if (deg[i] & 1) {
+                if (v1 == -1) v1 = i;
+                else if (v2 == -1) v2 = i;
+                else bad = true;
+            }
+        }
+
+        if (v1 != -1)
+            ++adj[v1][v2], ++adj[v2][v1];
+
+        stack<int>st;
+
+        st.push(start);
+        while (!st.empty()) {
+            int v = st.top();
+            int i;
+            for (i = 0; i < n; ++i)
+                if (adj[v][i]) break;
+
+            if (i == n) {
+                path.pb(v);
+                st.pop();
+            }
+            else {
+                --adj[v][i];
+                --adj[i][v];
+                st.push(i);
+            }
+        }
+
+        if (v1 != -1) {
+            for (size_t i = 0; i + 1 < sz(path); ++i) {
+                if ((path[i] == v1 && path[i + 1] == v2) ||
+                    (path[i] == v2 && path[i + 1] == v1)) {
+                    vi path2;
+                    for (size_t j = i + 1; j < sz(path); ++j)
+                        path2.pb(path[j]);
+                    for (size_t j = 1; j <= i; ++j)
+                        path2.pb(path[j]);
+                    path = path2;
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (adj[i][j])
+                    bad = true;
+            }
+        }
+
+        if (bad) {
+            vi dummy;
+            return dummy;
+        }
+
+        return path;
+    }
+
+    bool isBipartite() {
+        vi side(n, -1);
+        bool ans = true;
+        queue<int> q;
+        forn(i, 0, n) {
+            if (side[i] == -1) {
+                q.push(i);
+                side[i] = 0;
+                while (!q.empty()) {
+                    int v = q.front();
+                    q.pop();
+                    for (int u : adj[v]) {
+                        if (side[u] == -1) {
+                            side[u] = side[v] ^ 1;
+                            q.push(u);
+                        }
+                        else {
+                            ans &= side[u] != side[v];
+                            if (!ans) return ans;
+                        }
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+void exmapleComponents() {
+    Graph<int> g(7);
+    g.add(0, 1);
+    g.add(1, 2);
+    g.add(2, 4);
+    g.add(3, 5);
+    vvi components = g.findComponents();
+
+    for (const auto& component : components) {
+        for (int node : component)
+            cout << node << " ";
+        cout << endl;
+    }
+}
+
+void exampleBridges() {
+    Graph<int> g(6);
+    g.add(0, 1);
+    g.add(1, 2);
+    g.add(2, 0);
+    g.add(1, 3);
+    g.add(1, 4);
+    g.add(3, 4);
+    g.add(3, 5);
+
+    g.findBridges();
+}
+
+void exampleArticulationsPoints() {
+    Graph<int> g(7);
+    g.add(0, 1);
+    g.add(0, 2);
+    g.add(1, 2);
+    g.add(2, 3);
+    g.add(3, 4);
+    g.add(3, 5);
+    g.add(4, 5);
+    g.add(4, 6);
+
+    g.findArticulationsPoints();
+}
+
+void exampleCycle() {
+    Graph<int> g(4);
+    g.add(1, 0);
+    g.add(0, 2);
+    g.add(2, 1);
+    g.add(0, 3);
+
+    vector<int> cycle = g.findCycle();
+    if (!cycle.empty()) {
+        cout << "Ciclo encontrado: ";
+        for (int node : cycle)
+            cout << node << " ";
+        cout << endl;
+    }
+    else
+        cout << "No se encontró ningún ciclo." << endl;
+
+}
+
+void exampleEulerianPath() {
+    vvi mat = { {0,1,1,0},{1,0,1,1},{1,1,0,1},{0,1,1,0} };
+    Graph<int>g(4, mat);
+
+    vector<int> eulerianPath = g.eulerianPath();
+    if (!eulerianPath.empty()) {
+        cout << "Camino euleriano encontrado: ";
+        for (int node : eulerianPath)
+            cout << node << " ";
+        cout << endl;
+    }
+    else
+        cout << "No se encontró ningún camino euleriano." << endl;
+}
+
+void exampleCheckBipartite() {
+    Graph<int>g(4);
+    g.add(0, 1, true);
+    g.add(1, 2, true);
+    g.add(2, 3, true);
+    g.add(3, 0, true);
+    // g.add(1, 3, true); // Add to make it not bipartite
+    cout << ((g.isBipartite()) ? "YES" : "NO") << endl;
+
+}
+
+
+int main() {
+    FIN;
+    // Remove comment to test
+
+    // exmapleComponents();
+    // exampleBridges();
+    // exampleArticulationsPoints();
+    // exampleCycle();
+    // exampleEulerianPath();
+    // exampleCheckBipartite();
+
+    return 0;
+
+}
