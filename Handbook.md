@@ -1360,164 +1360,49 @@ vi eulerianPath() {
 ```
 
 
-## Grafos dirigidos ponderados.
+## Grafos ponderados.
+
+### Plantilla
 
 ```cpp
-class Nodo {
+template<typename T, typename W>
+class Graph {
 public:
-    int destino;
-    int peso;
-    Nodo(int n, int p) : destino(n), peso(p) {}
+    int n;
+    using vT = vector<T>;
+    using vvT = vector<vT>;
+    using vW = vector<W>;
+    using vvW = vector<vW>;
+    using pTW = pair<T, W>;
+    using vpTW = vector<pTW>;
+    using vvpTW = vector<vpTW >;
+
+    vvpTW adj;
+
+    Graph(int n) {
+        this->n = n;
+        adj.resize(n);
+    }
+
+    void add(T u, T v, W w, bool directed = false) {
+        adj[u].pb({ v,w });
+        if (directed) adj[v].pb({ u,w });
+    }
+private:
+    const W INF = numeric_limits<W>::max();
 };
 
-class Grafo {
-public:
-    vector<vector<Nodo>> grafo;
-    int size;
+int main(){
+    Graph<int, int> g(5);
+    g.add(0, 1, 2);
+    g.add(0, 2, 5);
+    g.add(1, 2, 1);
+    g.add(1, 3, 6);
+    g.add(2, 3, 3);
+    g.add(2, 4, 8);
 
-    Grafo(int n) {
-        size = n;
-        grafo.resize(n);
-    }
-
-    void add(int u, int v, int peso) {
-        grafo[u].push_back(Nodo(v, peso));
-    }
-
-    vector<vector<int>> matrizAdyacencia() {
-        vector<vector<int>> matriz(size, vector<int>(size, 0));
-        for (int i = 0; i < size; ++i) {
-            for (auto nodo : grafo[i]) {
-                matriz[i][nodo.destino] = nodo.peso;
-            }
-        }
-
-        return matriz;
-    }
-
-    void bfs(int inicio) {
-        vector<bool> visitado(size, false);
-        queue<int> cola;
-
-        visitado[inicio] = true;
-        cola.push(inicio);
-
-        while (!cola.empty()) {
-            int actual = cola.front();
-            cola.pop();
-            cout << actual << " ";
-
-            for (auto nodo : grafo[actual]) {
-                int hijo = nodo.destino;
-                if (!visitado[hijo]) {
-                    visitado[hijo] = true;
-                    cola.push(hijo);
-                    cout << "(" << actual << "->" << hijo << ":" << nodo.peso << ") ";
-                }
-            }
-        }
-    }
-
-    void dfs(int inicio) {
-        vector<bool> visitado(size, false);
-        stack<int> pila;
-
-        visitado[inicio] = true;
-        pila.push(inicio);
-
-        while (!pila.empty()) {
-            int actual = pila.top();
-            pila.pop();
-
-            for (auto nodo : grafo[actual]) {
-                int hijo = nodo.destino;
-                if (!visitado[hijo]) {
-                    visitado[hijo] = true;
-                    pila.push(hijo);
-                    cout << "(" << actual << "->" << hijo << ":" << nodo.peso << ") ";
-                }
-            }
-        }
-    }
-};
-
-int main() {
-    Grafo g(7);
-    g.add(1, 2, 2);
-    g.add(1, 3, 3);
-    g.add(3, 4, 1);
-    g.add(4, 5, 4);
-    g.add(4, 3, 2);
-    g.add(1, 6, 5);
-
-    g.bfs(1);
-    cout<<endl;
-    g.dfs(1);
-
-    return 0;
+    vi dist = g.dikkstra(0);
 }
-```
-
-### Chequeo Bipartito
-
-```cpp
-bool esBipartito(int inicio) {
-        vector<int> color(n, -1);
-        color[inicio] = 0;
-        queue<int> cola;
-        cola.push(inicio);
-
-        while (!cola.empty()) {
-            int u = cola.front();
-            cola.pop();
-            for (int i = 0; i < grafo[u].size(); i++) {
-                int v = grafo[u][i];
-                if (color[v] == -1) {
-                    color[v] = 1 - color[u]; 
-                    cola.push(v);
-                } else if (color[v] == color[u]) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-```
-
-### Detección de Ciclos
-
-```cpp
-bool tieneCiclos() {
-        vector<bool> visitado(size, false);
-        vector<int> padre(size, -1); // Almacena el padre de cada nodo en el DFS
-
-        for (int i = 0; i < size; ++i) {
-            if (!visitado[i] && tieneCiclosUtil(i, visitado, padre)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    bool tieneCiclosUtil(int v, vector<bool>& visitado, vector<int>& padre) {
-        visitado[v] = true;
-
-        for (auto nodo : grafo[v]) {
-            int hijo = nodo.destino;
-
-            if (!visitado[hijo]) {
-                padre[hijo] = v;
-                if (tieneCiclosUtil(hijo, visitado, padre)) {
-                    return true;
-                }
-            } else if (padre[v] != hijo) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 ```
 
 ## Camino Más Corto
@@ -1527,182 +1412,265 @@ bool tieneCiclos() {
 El algoritmo de Dijkstra se utiliza para encontrar el camino más corto desde un nodo de inicio a todos los demás nodos en un grafo con pesos no negativos.
 
 ```cpp
-vector<int> dijkstra(int inicio) {
-    vector<int> distancia(size, INT_MAX);
-    distancia[inicio] = 0;
-    priority_queue<pair<int, int>,vector<pair<int, int>>, greater<pair<int,int>>> colaPrioridad; 
-    colaPrioridad.push({0, inicio});
+vW dijkstra(T s) {
+    vW d(n, INF);
+    vT p(n, -1);
+    d[s] = 0;
 
-    while (!colaPrioridad.empty()) {
-        int u = colaPrioridad.top().second;
-        int dist_u = colaPrioridad.top().first;
-        colaPrioridad.pop();
+    priority_queue<pTW, vpTW, greater<pTW>> pq;
+    pq.push({ 0, s });
 
-        if (dist_u > distancia[u]) continue;
+    while (!pq.empty()) {
+        T u = pq.top().se;
+        W du = pq.top().fi;
+        pq.pop();
 
-        for (auto nodo : grafo[u]) {
-            int v = nodo.destino;
-            int peso = nodo.peso;
-
-            if (distancia[u] + peso <distancia[v]) {
-                 distancia[v] = distancia[u] + peso;
-                colaPrioridad.push({distancia[v], v});
+        if (du != d[u]) continue;
+        for (auto& child : adj[u]) {
+            T v = child.fi;
+            W w = child.se;
+            if (d[u] + w < d[v]) {
+                d[v] = d[u] + w;
+                p[v] = u;
+                pq.push({ d[v], v });
             }
         }
     }
-
-    return distancia;
+    return d;
 }
 ```
 
 ### Bellman-Ford
 
-El algoritmo de Bellman-Ford se utiliza para encontrar el camino más corto desde un nodo de inicio a todos los demás nodos en un grafo ponderado, incluso cuando el grafo contiene aristas con pesos negativos o ciclos negativos.
+El algoritmo de Bellman-Ford se utiliza para encontrar las distancias del camino más corto desde un nodo de inicio a todos los demás nodos en un grafo ponderado, incluso cuando el grafo contiene aristas con pesos negativos.
 
 ```cpp
-vector<int> BellmanFord(int origen) {
-        vector<int> distancia(size, numeric_limits<int>::max());
-        distancia[origen] = 0;
+vW bellmanFord(T s) {
+    vW d(n, INF);
+    d[s] = 0;
+    for (;;) {
+        bool any = false;
+        forn(u, 0, n) {
+            for (auto& child : adj[u]) {
+                T v = child.fi;
+                W w = child.se;
 
-        for (int i = 0; i < size - 1; ++i) {
-            for (int u = 0; u < size; ++u) {
-                for (const Nodo& nodo : grafo[u]) {
-                    int v = nodo.destino;
-                    int peso = nodo.peso;
-                    if (distancia[u] != numeric_limits<int>::max() && distancia[u] + peso < distancia[v]) {
-                        distancia[v] = distancia[u] + peso;
+                if (d[u] < INF) {
+                    if (d[v] > d[u] + w) {
+                        d[v] = d[u] + w;
+                        any = true;
                     }
                 }
             }
         }
+        if (!any)break;
+    }
+    return d;
+}
+```
 
-        // Comprobar si hay ciclos de peso negativo
-        for (int u = 0; u < size; ++u) {
-            for (const Nodo& nodo : grafo[u]) {
-                int v = nodo.destino;
-                int peso = nodo.peso;
-                if (distancia[u] != numeric_limits<int>::max() && distancia[u] + peso < distancia[v]) {
-                    // El grafo contiene un ciclo de peso negativo.
-                    // Puedes manejar esto de alguna manera si es necesario.
+Obtener el camino más corto
+
+```cpp
+vT bellmanFordPath(T s) {
+    vW d(n, INF);
+    vT p(n, -1);
+    d[s] = 0;
+    for (;;) {
+        bool any = false;
+        forn(u, 0, n) {
+            for (auto& child : adj[u]) {
+                T v = child.fi;
+                W w = child.se;
+
+                if (d[u] < INF && d[v] > d[u] + w) {
+                    d[v] = d[u] + w;
+                    p[v] = u;
+                    any = true;
                 }
             }
         }
-
-        return distancia;
+        if (!any) break;
+        }
+    vT path;
+    for (T v = 0; v < n; ++v) {
+        if (p[v] != -1) {
+            T current = v;
+            stack<T> temp;
+            temp.push(v);
+            while (current != s) {
+                current = p[current];
+                temp.push(current);
+            }
+            while (!temp.empty()) {
+                path.pb(temp.top());
+                temp.pop();
+            }
+        }
     }
+    return path;
+}
 ```
+
+Modificcion con ciclos negativos
+
+```cpp
+void bellmanFordNegativeCycles(T s) {
+    vW d(n, INF);
+    d[s] = 0;
+    vT p(n, -1);
+    W x;
+    forn(i, 0, n) {
+        x = -1;
+        forn(u, 0, n) {
+            for (auto& child : adj[u]) {
+                T v = child.fi;
+                W w = child.se;
+                if (d[u] < INF && d[v] > d[u] + w) {
+                    d[v] = max(-INF, d[u] + w);
+                    p[v] = u;
+                    x = v;
+                }
+            }
+        }
+    }
+
+    if (x == -1)
+        cout << "No negative cycle from " << s;
+    else {
+        T y = x;
+        forn(i, 0, n) y = p[y];
+
+        vT path;
+        for (T cur = y;; cur = p[cur]) {
+            path.pb(cur);
+            if (cur == y && sz(path) > 1) break;
+        }
+        reverse(all(path));
+        cout << "Negative cycle: ";
+        for (T u : path) cout << u << " ";
+    }
+}
+```
+
+## BFS/0-1
+
+Cuando los pesos son 0 o 1, es más eficiente utilizar una modificación de la BFS
+
+```cpp
+vT bfs01(T s) {
+    vW d(n, INF);
+    d[s] = 0;
+    deque<T> q;
+    q.push_front(s);
+
+    while (!q.empty()) {
+        int v = q.front();
+        q.pop_front();
+        for (auto child : adj[v]) {
+            int u = child.fi;
+            int w = child.se;
+            if (d[v] + w < d[u]) {
+                d[u] = d[v] + w;
+                if (w == 1) q.pb(u);
+                else q.push_front(u);
+            }
+        }
+    }
+    return d;
+}
+```
+
 ## Floyd-Warshall
 
-El algoritmo de Floyd-Warshall es un algoritmo de búsqueda de caminos más cortos que encuentra las distancias mínimas entre todos los pares de nodos en un grafo ponderado y dirigido o no dirigido.
-
-Floyd-Warshall es útil para encontrar la longitud de los caminos más cortos entre todos los nodos en el grafo, lo que lo hace adecuado para detectar ciclos negativos y para resolver problemas como la búsqueda de rutas óptimas
+El algoritmo de Floyd-Warshall es un algoritmo de búsqueda de caminos más cortos que encuentra las distancias mínimas entre todos los pares de nodos en un grafo ponderado y dirigido o no dirigido, lo que lo hace adecuado para detectar ciclos negativos y para resolver problemas como la búsqueda de rutas óptimas
 
 ```cpp
-vector<vector<int>> FloydWarshall() {
-        vector<vector<int>> distancia(size, vector<int>(size, numeric_limits<int>::max()));
+vvW floydWarshall() {
+    vvW d(n, vector<W>(n, INF));
 
-        // Inicializar distancias conocidas
-        for (int i = 0; i < size; ++i) {
-            distancia[i][i] = 0;
-            for (const Nodo& nodo : grafo[i]) {
-                distancia[i][nodo.destino] = nodo.peso;
-            }
+    for (int u = 0; u < n; ++u) {
+        for (auto& child : adj[u]) {
+            T v = child.fi;
+            W w = child.se;
+            d[u][v] = w;
         }
-
-        // Calcular distancias mínimas
-        for (int k = 0; k < size; ++k) {
-            for (int i = 0; i < size; ++i) {
-                for (int j = 0; j < size; ++j) {
-                    if (distancia[i][k] != numeric_limits<int>::max() && distancia[k][j] != numeric_limits<int>::max()) {
-                        if (distancia[i][k] + distancia[k][j] < distancia[i][j]) {
-                            distancia[i][j] = distancia[i][k] + distancia[k][j];
-                        }
-                    }
-                }
-            }
-        }
-
-        return distancia;
+        d[u][u] = 0;
     }
+    forn(k, 0, n) {
+        forn(i, 0, n) {
+            forn(j, 0, n) {
+                if (d[i][k] < INF && d[k][j] < INF)
+                    d[i][j] = min(d[i][j], d[i][k] + d[k][j]);
+            }
+        }
+    }
+    return d;
+}
 ```
+
 ## Minimum Spanning Trees
 
+Un Minimum Spanning Tree (MST) es el árbol que conecta todos los nodos de un grafo con el menor costo posible, donde el costo se calcula sumando los pesos de las aristas seleccionadas.
+
 ### Kruskal
+
+Kruskal es un algoritmo para encontrar el árbol de expansión mínima en un grafo ponderado no dirigido. Este algoritmo selecciona las aristas más pequeñas y las agrega al árbol de expansión, evitando la formación de ciclos.
+
 Kruskal es un algoritmo que ayuda a encontrar la forma más barata de conectar todos los nodos en un conjunto de nodos. Imagina que tienes ciudades y quieres construir carreteras para conectarlas de la manera más eficiente.
 
-Kruskal comienza con todas las ciudades desconectadas y luego elige las carreteras más baratas una por una, asegurándose de que no se forme un circuito cerrado. Termina cuando todas las ciudades están conectadas y obtienes un conjunto de carreteras que conectan todas las ciudades de manera eficiente. Esto se llama un "árbol de expansión mínima".
-
-
-
 ```cpp
+vvpTW kruskal() {
+    W cost = 0;
+    vvpTW result(n);
+    vT parent(n), rank(n);
+    for (T i = 0; i < n; ++i) make_set(i, parent, rank);
+    vector<pair<W, pair<T, T>>> edges;
+    for (T u = 0; u < n; ++u) {
+        for (auto& child : adj[u]) {
+            T v = child.first;
+            W w = child.second;
+            edges.push_back({ w, {u, v} });
+        }
+    }
 
-struct Arista {
-    int origen, destino, peso;
-};
+    sort(all(edges));
 
-bool compararAristas(const Arista& a, const Arista& b) {
-    return a.peso < b.peso;
+    for (auto& edge : edges) {
+        T u = edge.second.first;
+        T v = edge.second.second;
+        W w = edge.first;
+        if (find_set(u, parent) != find_set(v, parent)) {
+            cost += w;
+            result[u].pb({ v, w });
+            union_sets(u, v, parent, rank);
+        }
+    }
+    return result;
 }
 
-class KruskalGrafo {
-private:
-    int size;
-    vector<Arista> aristas;
+void make_set(T v, vT& parent, vT& rank) {
+    parent[v] = v;
+    rank[v] = 0;
+}
 
-public:
-    KruskalGrafo(int vertices) : size(vertices) {}
+T find_set(T v, vT& parent) {
+    if (v == parent[v]) return v;
+    return parent[v] = find_set(parent[v], parent);
+}
 
-    int encontrarPadre(vector<int>& padre, int v) {
-        if (padre[v] == -1)
-            return v;
-        return encontrarPadre(padre, padre[v]);
-    }
-
-    void add(int origen, int destino, int peso) {
-        Arista arista;
-        arista.origen = origen;
-        arista.destino = destino;
-        arista.peso = peso;
-        aristas.push_back(arista);
-    }
-
-    void encontrarMST() {
-        sort(aristas.begin(), aristas.end(), compararAristas);
-
-        vector<int> padre(size, -1);
-        vector<Arista> mst;
-
-        for (const Arista& arista : aristas) {
-            int origenPadre = encontrarPadre(padre, arista.origen);
-            int destinoPadre = encontrarPadre(padre, arista.destino);
-
-            if (origenPadre != destinoPadre) {
-                mst.push_back(arista);
-                padre[origenPadre] = destinoPadre;
-            }
-        }
-
-        cout << "Árbol de Expansión Mínima:\n";
-        for (const Arista& arista : mst) {
-            cout << arista.origen << " - " << arista.destino << " : " << arista.peso << "\n";
-        }
-    }
-};
-
-int main() {
-    KruskalGrafo kruskal(4);
-
-    kruskal.add(0, 1, 2);
-    kruskal.add(0, 2, 3);
-    kruskal.add(1, 2, 1);
-    kruskal.add(1, 3, 4);
-    kruskal.add(2, 3, 5);
-
-    kruskal.encontrarMST();
-
-    return 0;
+void union_sets(T a, T b, vT& parent, vT& rank) {
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b) {
+        if (rank[a] < rank[b])
+            swap(a, b);
+        parent[b] = a;
+        if (rank[a] == rank[b]) rank[a]++;
+    }   
 }
 ```
+
 ### Union-Find
 
 ```cpp
