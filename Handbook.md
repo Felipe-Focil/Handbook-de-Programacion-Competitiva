@@ -1384,14 +1384,13 @@ vT topologicalSort() {
             if (degree[v] == 0) q.push(v);
         }
     }
-
+    //No existe
     if (topoSort.size() != n) 
         topoSort.clear();
             
     return topoSort;
 }
 ```
-
 
 ## Grafos ponderados.
 
@@ -1832,7 +1831,7 @@ int main(){
 }
 ```
 
-## Lowest Common Ancestor
+## Lowest Common Ancestor (Version no generica)
 
 ```cpp
 class Grafo {
@@ -1904,6 +1903,193 @@ int main() {
     cout << "Lowest Common Ancestor (LCA) de " << nodo1 << " y " << nodo2 << " es " << lca << endl;
 
     return 0;
+}
+```
+
+# Segment Tree
+
+Un Segment Tree es una estructura de datos que permite hacer consultas eficientes sobre intervalos en un arreglo, como hallar la suma o el máximo en un rango dado.
+
+## Plantilla
+```cpp
+template<typename T>
+class SegmentTree {
+public:
+
+    vector<T> data;
+    vector<T> st;
+    int n;
+
+    SegmentTree(vector<T>& a) {
+        n = sz(a);
+        data = a;
+        st.resize(4 * n);
+        build(1, 0, n - 1);
+    }
+
+    T query(int l, int r) {
+        return query(1, 0, n - 1, l, r);
+    }
+
+    void update(int pos, T val) {
+        update(1, 0, n - 1, pos, val);
+    }
+
+    
+    T operation(T& a, T& b) {
+        //Modifica esta funcion de acuerdo el tipo de ST
+        return a+b;
+    }
+
+private:
+
+    void build(int v, int l, int r) {
+        if (l == r) {
+            st[v] = data[l];
+            return;
+        }
+        int m = mid(l, r);
+        build(lc(v), l, m);
+        build(rc(v), m + 1, r);
+
+        T a = st[lc(v)];
+        T b = st[rc(v)];
+
+        st[v] = operation(a, b);
+    }
+
+    T query(int v, int l, int r, int ql, int qr) {
+        if (l > qr || r < ql)
+            return 0;
+
+        if (l >= ql && r <= qr)
+            return st[v];
+
+        int m = mid(l, r);
+        T a = query(lc(v), l, m, ql, qr);
+        T b = query(rc(v), m + 1, r, ql, qr);
+
+        return operation(a, b);
+    }
+
+    void update(int v, int l, int r, int pos, T val) {
+        if (l == r) { st[v] = val; return; }
+        int m = mid(l, r);
+        if (pos <= m)  update(lc(v), l, m, pos, val);
+        else  update(rc(v), m + 1, r, pos, val);
+
+        T a = st[lc(v)];
+        T b = st[rc(v)];
+
+        st[v] = operation(a, b);
+    }
+
+    int find(int v, int l, int r, T& val) {
+        if (l == r) {
+            if (st[v] == val) return l;
+            else return -1;
+        }
+        int m = mid(l, r);
+        int leftIndex = find(lc(v), l, m, val);
+
+        if (leftIndex != -1) return leftIndex;
+        else return find(rc(v), m + 1, r, val);
+    }
+
+    int lc(int v) { return 2 * v; }
+    int rc(int v) { return 2 * v + 1; }
+    int mid(int l, int r) { return (l + r) / 2; }
+};
+
+int main(){
+    vector<int> a = { 1, 2, 3, 4, 5 };
+    SegmentTree<int> st(a);
+
+    cout << st.query(0, 2) << endl;
+    cout << st.query(1, 3) << endl;
+    cout << st.query(2, 4) << endl;
+    cout << st.query(3, 4) << endl;
+    cout << st.query(0, 4) << endl;
+
+    st.update(0, 100);
+    cout << st.query(0, 4) << endl;
+}
+```
+
+Algunos ejemplos de modificaciones de Segment Tree
+
+```cpp
+// Guarda la suma en rangos
+T operation(T& a, T& b) {
+        return a+b;
+}
+
+// Guarda el valor maximo en rangos
+T operation(T& a, T& b) {
+        return max(a,b);
+}
+
+// Guarda el valor XOR en rangos
+T operation(T& a, T& b) {
+        return a^b;
+}
+```
+
+### Funciones de busqueda
+
+Regresar el indice del arbol que contenga exactamente ese valor
+```cpp
+int find(T& val) {
+    return find(1, 0, n - 1, val);
+}
+
+int find(int v, int l, int r, T& val) {
+    if (l == r) {
+        if (st[v] == val) return l;
+        else return -1;
+    }
+    int m = mid(l, r);
+    int leftIndex = find(lc(v), l, m, val);
+
+    if (leftIndex != -1) return leftIndex;
+    else return find(rc(v), m + 1, r, val);
+}
+```
+
+Encontrar el primer valor que sea mayor o igual en el arbol
+
+```cpp
+int lower_bound(T& val) {
+    return lower_bound(1, 0, n - 1, val);
+}
+int lower_bound(int v, int l, int r, T& val) {
+    if (l == r) {
+        if (st[v] >= val) return l;
+        else return -1;
+    }
+    int m = mid(l, r);
+    if (st[lc(v)] >= val)
+         return lower_bound(lc(v), l, m, val);
+    else
+        return lower_bound(rc(v), m + 1, r, val);
+}
+```
+Encontrar el primer valor que sea estrictamente mayor en el arbol
+```cpp
+int upper_bound(T& val) {
+    return upper_bound(1, 0, n - 1, val);
+}
+
+int upper_bound(int v, int l, int r, T& val) {
+    if (l == r) {
+        if (st[v] > val) return l;
+        else return -1;
+    }
+    int m = mid(l, r);
+    if (st[lc(v)] > val)
+        return upper_bound(lc(v), l, m, val);
+    else
+        return upper_bound(rc(v), m + 1, r, val);
 }
 ```
 
@@ -2608,66 +2794,6 @@ vector<vector<int>> getCombinations(const vector<int>& nums, int k) {
 
 ```
 
-# Segment Tree
-
-```cpp
-template<typename T>
-struct SegmentTree {
-    int N;
-    vector<T> ST;
-
-    // Constructor: Construye el Árbol de Segmentos a partir de un arreglo dado.
-    SegmentTree(vector<T> & arr) {
-        N = arr.size();
-        ST.resize(N << 1); // El tamaño del árbol es aproximadamente el doble del tamaño del arreglo.
-        
-        // Inicializar las hojas del árbol con los valores del arreglo.
-        for (int i = 0; i < N; ++i)
-            ST[N + i] = arr[i];
-        
-        // Construir el árbol subiendo desde las hojas.
-        for (int i = N - 1; i > 0; --i)
-            ST[i] = max(ST[i << 1], ST[i << 1 | 1]);
-    }
-
-    // Actualiza el valor en la posición i del arreglo y actualiza el árbol correspondientemente.
-    void update(int i, T value) {
-        ST[i += N] = value; // Actualiza el valor en la hoja correspondiente.
-        
-        // Actualizar los nodos padres subiendo en el árbol.
-        while (i >>= 1)
-            ST[i] = max(ST[i << 1], ST[i << 1 | 1]);
-    }
-
-    // Consulta el valor máximo en el rango [l, r] del arreglo original.
-    T query(int l, int r) {
-        T res = 0;
-        
-        // Moverse hacia arriba en el árbol, dividiendo el rango por la mitad en cada paso.
-        for (l += N, r += N; l <= r; l >>= 1, r >>= 1) {
-            if (l & 1) res = max(res, ST[l++]); // Si l es impar, incluir su valor y mover l hacia la derecha.
-            if (!(r & 1)) res = max(res, ST[r--]); // Si r es par, incluir su valor y mover r hacia la izquierda.
-        }
-        
-        return res;
-    }
-};
-
-int main() {
-    vector<int> arr = {1, 3, 2, 4, 5, 7, 6, 8};
-    SegmentTree<int> segTree(arr);
-
-    int maxInRange = segTree.query(1, 5);
-    cout << "El valor máximo en el rango [1, 5] es: " << maxInRange << endl;
-    
-    segTree.update(3, 9);
-
-    maxInRange = segTree.query(1, 5);
-    cout << "Después de la actualización, el valor máximo en el rango [1, 5] es: " << maxInRange << endl;
-
-    return 0;
-}
-```
 
 # Algebra Lineal
 
