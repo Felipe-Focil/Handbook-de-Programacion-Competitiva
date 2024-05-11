@@ -22,8 +22,8 @@ Tu código es correcto, pero es demasiado lento, por lo cual deberás buscar una
 El código que enviaste ocupa demasiada memoria
 
 ### Wrong Answer (WA)
-Tu código está mal.
 
+Tu código está mal.
 
 ### Output Limit Exceeded (OLE)
 
@@ -955,7 +955,6 @@ int main(){
 }
 ```
 
-
 # Heap
 
 ````cpp
@@ -1011,109 +1010,357 @@ private:
 
 # Grafos
 
-## Recorridos
+## Grafo No Ponderado
 
-### Grafos dirigidos no ponderados
-
+### Plantilla
 ```cpp
-class Nodo{
-    public:
-        int destino;
-    Nodo(int n){
-        destino = n;
+template<typename T>
+class Graph {
+public:
+    
+    using vT = vector<T>;
+    using vvT = vector<vT>;
+    vvT adj;
+
+    Graph(int n) {
+        this->n = n;
+        adj.resize(n);
+    }
+
+    Graph(int n, vvi& mat) {
+        this->n = n;
+        adj = mat;
+    }
+
+    void add(int u, int v, bool undirected = false) {
+        adj[u].push_back(v);
+        if (undirected)
+            adj[v].push_back(u);
     }
 };
 
-class Grafo{
-    public:
-    vector<vector<Nodo>>grafo;
-    int size;
-    
-    Grafo(int n){
-        size = n;
-        grafo.resize(n);
-    }
-    
-    void add(int u, int v){
-        grafo[u].push_back(Nodo(v));
-    }
-    
-    vector<vector<int>>matrizAdyacencia(){
-        vector<vector<int>> matriz(size, vector<int>(size, 0));
-        for (int i = 0; i < size; ++i) {
-            for (auto nodo : grafo[i]) {
-                matriz[i][nodo.destino] = 1;
-            }
-        }
+int main(){
+    Graph<int>grafoDirigido(4);
+    grafoDirigido.add(0,1);
+    grafoDirigido.add(0,3);
+    grafoDirigido.add(1,2);
+    grafoDirigido.add(2,3);
 
-        return matriz;
-        
-    }
-    
-    void bfs(int inicio){
-        vector<bool>visitado(size,false);
-        queue<int>cola;
-        
-        visitado[inicio] = true;
-        cola.push(inicio);
-        
-        while(!cola.empty()){
-            int actual = cola.front();
-            cola.pop();
-            cout<<actual << " ";
-            
-            for(auto nodo : grafo[actual]){
-                int hijo = nodo.destino;
-                if(!visitado[hijo]){
-                    visitado[hijo] = true;
-                    cola.push(hijo);
-                }
-            }
-        }
-    }
-    
-    void dfs(int inicio){
-        vector<bool>visitado(size,false);
-        stack<int>pila;
-        
-        visitado[inicio] = true;
-        pila.push(inicio);
-        
-        while(!pila.empty()){
-            int actual = pila.top();
-            pila.pop();
-            cout<<actual << " ";
-            
-            for(auto nodo : grafo[actual]){
-                int hijo = nodo.destino;
-                if(!visitado[hijo]){
-                    visitado[hijo] = true;
-                    pila.push(hijo);
-                }
-            }
-        }
-    }
-
-};
-
-int main() {
-    Grafo g(7);
-    g.add(1,2);
-    g.add(1,3);
-    g.add(3,4);
-    g.add(4,5);
-    g.add(4,3);
-    g.add(1,6);
-
-    g.bfs(1);
-    cout<<endl;
-    g.dfs(1);cout<<endl;    
-
-    return 0;
+    Graph<int>grafoNoDirigido(4);
+    grafoNoDirigido.add(0,1,true);
+    grafoNoDirigido.add(0,3,true);
+    grafoNoDirigido.add(1,2,true);
+    grafoNoDirigido.add(2,3,true);
 }
 ```
 
-### Grafos dirigidos ponderados.
+### Busqueda en Profundidad (DFS)
+
+```cpp
+vb vsisted(n,false);
+void dfs(T u, vb& visited) {
+    cout << u << " ";
+    for (auto &v : adj[u]) {
+        if (!visited[v]) {
+            visited[v] = true;
+            dfs(v, visited);
+        }
+    }
+}
+```
+
+### Busqueda en Anchura (BFS)
+
+```cpp
+vb vsisted(n,false);
+void bfs(T u, vb& visited) {
+    queue<T> q;
+    q.push(u);
+    visited[u] = true;
+
+    while (!q.empty()) {
+        int current = q.front();
+        q.pop();
+        cout << current << " ";
+
+        for (T v : adj[current]) {
+            if (!visited[v]) {
+                visited[v] = true;
+                q.push(v);
+            }
+        }
+    }
+}
+```
+
+### Componentes Conexas
+
+Una componente conexa es un grupo de nodos en un grafo donde cada nodo puede alcanzar cualquier otro nodo del mismo grupo de caminos del grafo.
+
+```cpp
+void dfs(int i, vT & c, vb& u) {
+        u[i] = 1;
+        c.pb(i);
+        for (T v : adj[i]) {
+            if (!u[v])
+                dfs(v, c, u);
+        }
+    }
+    vvT findComponents() {
+        vb visited(n, false);
+        vvT components;
+        forn(i, 0, n) {
+            if (!visited[i]) {
+                vT component;
+                dfs(i, component, visited);
+                components.pb(component);
+            }
+        }
+        return components;
+    }
+```
+
+### Puentes
+
+Un puente en un grafo es una arista cuya eliminación dividiría el grafo en dos o más componentes conexas adicionales.
+
+```cpp
+void findBridges() {
+        int timer = 0;
+        vb visited(n, false);
+        vT tin(n, -1), low(n, -1);
+        for (int i = 0; i < n; ++i) {
+            if (!visited[i])
+                dfs(i, -1, timer, visited, tin, low);
+        }
+    }
+
+    void dfs(int u, int p, int& timer, vb& vis, vT& tin, vT& low) {
+        vis[u] = true;
+        tin[u] = low[u] = timer++;
+        for (int v : adj[u]) {
+            if (v == p) continue;
+            if (vis[v]) low[u] = min(low[u], tin[v]);
+            else {
+                dfs(v, u, timer, vis, tin, low);
+                low[u] = min(low[u], low[v]);
+                if (low[v] > tin[u]) IS_BRIDGE(u, v);
+            }
+        }
+    }
+    
+    //Process the bridge, for example print it
+    void IS_BRIDGE(int u, int v) {
+        cout << u << " " << v << endl;
+    }
+```
+
+### Puntos de articulación
+
+Un punto de articulación en un grafo es un nodo cuya eliminación dividiría el grafo en dos o más componentes conexas adicionales.
+
+```cpp
+ void findArticulationsPoints() {
+        int timer = 0;
+        vb visited(n, false);
+        vT tin(n, -1), low(n, -1);
+        forn(i, 0, n) {
+            if (!visited[i])
+                dfs(i, -1, timer, visited, tin, low);
+        }
+    }
+
+    void dfs(int u, int p, int& timer, vb& vis, vT& tin, vT& low) {
+        vis[u] = true;
+        tin[u] = low[u] = timer++;
+        int c = 0;
+        for (int v : adj[u]) {
+            if (v == p) continue;
+            if (vis[v]) low[u] = min(low[u], tin[v]);
+            else {
+                dfs(v, u, timer, vis, tin, low);
+                low[u] = min(low[u], low[v]);
+                if (low[v] >= tin[u] && p != -1) IS_CUTPOINT(u);
+                ++c;
+            }
+        }
+        if (p == -1 && c > 1) IS_CUTPOINT(u);
+    }
+
+    //Process Articulation Point
+    void IS_CUTPOINT(int u) {
+        cout << u << endl;
+    }
+```
+
+### Encontrar ciclos
+
+Un ciclo en un grafo es una secuencia de aristas que comienza y termina en el mismo nodo, permitiendo recorrer el grafo y volver al punto de partida.
+
+```cpp
+vT findCycle() {
+    vi color(n, 0);
+    vT parent(n, -1),cycle;
+
+    int start = -1;
+
+    forn(v, 0, n) {
+        if (color[v] == 0 && dfs(v, color, parent, start)) break;
+    }
+
+    if (start != -1) {
+        cycle.pb(start);
+        for (int i = parent[start]; i != start; i = parent[i])
+            cycle.pb(i);
+        cycle.pb(start);
+        reverse(all(cycle));
+    }
+
+    return cycle;
+}
+
+bool dfs(int v, vi& c, vT& p, int& s) {
+    c[v] = 1;
+    for (int u : adj[v]) {
+        if (c[u] == 0) {
+            p[u] = v;
+            if (dfs(u, c, p, s)) return true;
+        }
+        else if (c[u] == 1 && p[v] != u) {
+            s = u;
+            return true;
+        }
+    }
+    c[v] = 2;
+    return false;
+}
+```
+### Bipartito
+
+Un grafo bipartito es un tipo de grafo cuyos vértices pueden dividirse en dos conjuntos disjuntos de tal manera que todas las aristas del grafo conectan un vértice de un conjunto con uno del otro conjunto. Es decir puedes pintar los nodos con dos colores, de tal manera que no haya aristas que conecten nodos del mismo color.
+
+```cpp
+bool isBipartite() {
+    vi side(n, -1);
+    bool ans = true;
+    queue<int> q;
+    forn(i, 0, n) {
+        if (side[i] == -1) {
+            q.push(i);
+            side[i] = 0;
+            while (!q.empty()) {
+                int v = q.front();
+                q.pop();
+                for (int u : adj[v]) {
+                    if (side[u] == -1) {
+                        side[u] = side[v] ^ 1;
+                        q.push(u);
+                    }
+                    else {
+                            ans &= side[u] != side[v];
+                        if (!ans) return ans;
+                    }
+                }
+            }
+        }
+    }
+    return ans;
+}
+```
+
+### Camino Euleriano
+
+Un camino euleriano en un grafo es un recorrido que pasa por cada arista exactamente una vez y visita cada vértice al menos una vez. Si el camino comienza y termina en el mismo vértice, se llama ciclo euleriano. Se debe usar matrices de adyacencencia;
+
+
+```cpp
+Graph(int n, vvT& mat) {
+    this->n = n;
+    adj = mat;
+}
+
+vi eulerianPath() {
+    // Assuming adj is adjacency matrix
+    vi deg(n);
+    vi path;
+    forn(i, 0, n) {
+        for (int j : adj[i])
+            deg[i]++;
+    }
+
+    int start = 0;
+    while (start < n && !deg[start])
+        start++;
+
+    if (start == n) return path;
+
+    int v1 = -1, v2 = -1;
+    bool bad = false;
+
+    forn(i, 0, n) {
+        if (deg[i] & 1) {
+            if (v1 == -1) v1 = i;
+            else if (v2 == -1) v2 = i;
+            else bad = true;
+        }
+    }
+
+    if (v1 != -1)
+        ++adj[v1][v2], ++adj[v2][v1];
+
+    stack<int>st;
+
+    st.push(start);
+    while (!st.empty()) {
+        int v = st.top();
+        int i;
+        for (i = 0; i < n; ++i)
+            if (adj[v][i]) break;
+
+        if (i == n) {
+            path.pb(v);
+            st.pop();
+        }
+        else {
+            --adj[v][i];
+            --adj[i][v];
+            st.push(i);
+        }
+    }
+
+    if (v1 != -1) {
+        for (size_t i = 0; i + 1 < sz(path); ++i) {
+            if ((path[i] == v1 && path[i + 1] == v2) ||
+                (path[i] == v2 && path[i + 1] == v1)) {
+                vi path2;
+                for (size_t j = i + 1; j < sz(path); ++j)
+                    path2.pb(path[j]);
+                for (size_t j = 1; j <= i; ++j)
+                    path2.pb(path[j]);
+                path = path2;
+                break;
+            }
+        }
+    }
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            if (adj[i][j])
+                bad = true;
+        }
+    }
+
+    if (bad) {
+        vi dummy;
+        return dummy;
+    }
+
+    return path;
+}
+```
+
+
+## Grafos dirigidos ponderados.
 
 ```cpp
 class Nodo {

@@ -25,7 +25,9 @@ template<typename T>
 class Graph {
 public:
     int n;
-    vector<vector<T>> adj;
+    using vT = vector<T>;
+    using vvT = vector<vT>;
+    vvT adj;
     Graph(int n) {
         this->n = n;
         adj.resize(n);
@@ -52,7 +54,7 @@ public:
         }
     }
 
-    void dfsComponent(int i, vector<T>& c, vb& u) {
+    void dfsComponent(int i, vT& c, vb& u) {
         u[i] = 1;
         c.push_back(i);
         for (T v : adj[i]) {
@@ -60,12 +62,12 @@ public:
                 dfsComponent(v, c, u);
         }
     }
-    vector<vector<T>> findComponents() {
+    vvT findComponents() {
         vb visited(n, false);
-        vector<vector<T>> components;
+        vvT components;
         forn(i, 0, n) {
             if (!visited[i]) {
-                vector<T> component;
+                vT component;
                 dfsComponent(i, component, visited);
                 components.push_back(component);
             }
@@ -83,7 +85,7 @@ public:
         }
     }
 
-    void dfsBridges(int u, int p, int& timer, vb& vis, vector<T>& tin, vector<T>& low) {
+    void dfsBridges(int u, int p, int& timer, vb& vis, vT& tin, vT& low) {
         vis[u] = true;
         tin[u] = low[u] = timer++;
         for (int v : adj[u]) {
@@ -107,14 +109,14 @@ public:
     void findArticulationsPoints() {
         int timer = 0;
         vb visited(n, false);
-        vector<T> tin(n, -1), low(n, -1);
+        vT tin(n, -1), low(n, -1);
         forn(i, 0, n) {
             if (!visited[i])
                 dfsArticulations(i, -1, timer, visited, tin, low);
         }
     }
 
-    void dfsArticulations(int u, int p, int& timer, vb& vis, vector<T>& tin, vector<T>& low) {
+    void dfsArticulations(int u, int p, int& timer, vb& vis, vT& tin, vT& low) {
         vis[u] = true;
         tin[u] = low[u] = timer++;
         int c = 0;
