@@ -1358,6 +1358,39 @@ vi eulerianPath() {
     return path;
 }
 ```
+### Oredenamiento Topologico
+
+Ordenar los nodos de un grafo dirigido de manera que ningún nodo preceda a sus nodos dependientes,garantiza que se siga un orden coherente y sin conflictos en situaciones en las que el orden es esencial.
+
+```cpp
+vT topologicalSort() {
+    vi degree(n, 0);
+    vT topoSort;
+    queue<int> q;
+    forn(u, 0, n) {
+        for (T v : adj[u]) degree[v]++;
+    }
+
+    forn(u, 0, n){
+        if (degree[u] == 0) q.push(u);
+    }
+
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        topoSort.pb(u);
+        for (int v : adj[u]) {
+            degree[v]--;
+            if (degree[v] == 0) q.push(v);
+        }
+    }
+
+    if (topoSort.size() != n) 
+        topoSort.clear();
+            
+    return topoSort;
+}
+```
 
 
 ## Grafos ponderados.
@@ -1798,55 +1831,6 @@ int main(){
     cout << ds.sizeOfGroup(0) << endl;
 }
 ```
-
-### Oredenamiento Topologico
-Ordenar los nodos de un grafo dirigido de manera que ningún nodo preceda a sus nodos dependientes,garantiza que se siga un orden coherente y sin conflictos en situaciones en las que el orden es esencial.
-```cpp
-void ordenacionTopologica() {
-    vector<int> gradosEntrada(size, 0);
-    for (int i = 0; i < size; i++) {
-        for (Nodo nodo : grafo[i]) {
-            gradosEntrada[nodo.destino]++;
-        }
-    }
-    queue<int> cola;
-
-    for (int i = 0; i < size; i++) {
-        if (gradosEntrada[i] == 0) {
-            cola.push(i);
-        }
-    }
-    int visitados = 0;
-        
-    vector<int> ordenTopologico;
-
-    while (!cola.empty()) {
-        int u = cola.front();
-        cola.pop();
-        ordenTopologico.push_back(u);
-
-        for (Nodo nodo : grafo[u]) {
-            if (--gradosEntrada[nodo.destino] == 0) {
-                cola.push(nodo.destino);
-            }
-        }
-
-        visitados++;
-    }
-    if (visitados != size) {
-        cout << "El grafo contiene un ciclo." << endl;
-        return;
-    }
-        
-    cout << "Orden topológico:";
-    for (int v : ordenTopologico) {
-        cout << " " << v;
-    }cout << endl;
-}
-```
-
-
-
 
 ## Lowest Common Ancestor
 

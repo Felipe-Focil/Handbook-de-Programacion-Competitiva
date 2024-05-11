@@ -279,6 +279,34 @@ public:
         }
         return ans;
     }
+
+    vT topologicalSort() {
+        vi degree(n, 0);
+        vT topoSort;
+        queue<int> q;
+        forn(u, 0, n) {
+            for (T v : adj[u]) degree[v]++;
+        }
+
+        forn(u, 0, n) {
+            if (degree[u] == 0) q.push(u);
+        }
+
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
+            topoSort.pb(u);
+            for (int v : adj[u]) {
+                degree[v]--;
+                if (degree[v] == 0) q.push(v);
+            }
+        }
+
+        if (topoSort.size() != n)
+            topoSort.clear();
+
+        return topoSort;
+    }
 };
 
 void exmapleComponents() {
@@ -295,6 +323,8 @@ void exmapleComponents() {
         cout << endl;
     }
 }
+
+
 
 void exampleBridges() {
     Graph<int> g(6);
