@@ -1021,7 +1021,7 @@ int main(){
 
 # Heap
 
-````cpp
+```cpp
 #define pb push_back
 #define sz(a) int(a.size())
 
@@ -1077,6 +1077,7 @@ private:
 ## Grafo No Ponderado
 
 ### Plantilla
+
 ```cpp
 template<typename T>
 class Graph {
@@ -1299,6 +1300,7 @@ bool dfs(int v, vi& c, vT& p, int& s) {
     return false;
 }
 ```
+
 ### Bipartito
 
 Un grafo bipartito es un tipo de grafo cuyos vértices pueden dividirse en dos conjuntos disjuntos de tal manera que todas las aristas del grafo conectan un vértice de un conjunto con uno del otro conjunto. Es decir puedes pintar los nodos con dos colores, de tal manera que no haya aristas que conecten nodos del mismo color.
@@ -1335,7 +1337,6 @@ bool isBipartite() {
 ### Camino Euleriano
 
 Un camino euleriano en un grafo es un recorrido que pasa por cada arista exactamente una vez y visita cada vértice al menos una vez. Si el camino comienza y termina en el mismo vértice, se llama ciclo euleriano. Se debe usar matrices de adyacencencia;
-
 
 ```cpp
 Graph(int n, vvT& mat) {
@@ -1422,6 +1423,7 @@ vi eulerianPath() {
     return path;
 }
 ```
+
 ### Oredenamiento Topologico
 
 Ordenar los nodos de un grafo dirigido de manera que ningún nodo preceda a sus nodos dependientes,garantiza que se siga un orden coherente y sin conflictos en situaciones en las que el orden es esencial.
@@ -1456,7 +1458,7 @@ vT topologicalSort() {
 }
 ```
 
-## Grafos ponderados.
+## Grafos ponderados
 
 ### Plantilla
 
@@ -1975,6 +1977,7 @@ int main() {
 Un Segment Tree es una estructura de datos que permite hacer consultas eficientes sobre intervalos en un arreglo, como hallar la suma o el máximo en un rango dado.
 
 ## Plantilla
+
 ```cpp
 template<typename T>
 class SegmentTree {
@@ -2102,6 +2105,7 @@ T operation(T& a, T& b) {
 ### Funciones de busqueda
 
 Regresar el indice del arbol que contenga exactamente ese valor
+
 ```cpp
 int find(T& val) {
     return find(1, 0, n - 1, val);
@@ -2138,7 +2142,9 @@ int lower_bound(int v, int l, int r, T& val) {
         return lower_bound(rc(v), m + 1, r, val);
 }
 ```
+
 Encontrar el primer valor que sea estrictamente mayor en el arbol
+
 ```cpp
 int upper_bound(T& val) {
     return upper_bound(1, 0, n - 1, val);
@@ -2158,6 +2164,7 @@ int upper_bound(int v, int l, int r, T& val) {
 ```
 
 # Busqueda en tableros
+
 ```cpp
 struct Celda {
     int x, y, distancia;
@@ -2251,6 +2258,7 @@ int main() {
 # Arboles Binarios
 
 ## A partir de una cadena preorden
+
 ```cpp
 struct Nodo {
     int valor;
@@ -2350,6 +2358,7 @@ int main() {
 ```
 
 ## De busqueda
+
 ```cpp
 struct Nodo {
     int valor;
@@ -2537,6 +2546,7 @@ int main() {
 | `preorder`    | Imprime los nodos del árbol en preorden, primero la raíz, luego los del subárbol izquierdo y finalmente los del subárbol derecho.                                                                                                                                  |
 | `postorder`   | Imprime los nodos del árbol en postorden, primero los del subárbol izquierdo, luego los del subárbol derecho y finalmente la raíz.                                                                                                                               |
 | `levelorder`  | Imprime los nodos del árbol por niveles, comenzando por la raíz y luego imprimiendo los nodos del nivel 1, nivel 2, y así sucesivamente.|
+
 ## AVL
 
 ```cpp
@@ -2674,7 +2684,6 @@ int main() {
 | `void preorden(Nodo* nodo)` | Recorre el árbol en preorden, imprimiendo los valores de los nodos. |
 | `void push(int val)` | Inserta un nuevo nodo con el valor dado en el árbol, utilizando la función `insertar`.|
 
-
 # Trie
 
 ```cpp
@@ -2777,7 +2786,6 @@ private:
 
 ### Metodos
 
-
 | Método | Descripción |
 | ------ | ----------- |
 | `Trie()` | Constructor que crea un Trie vacío. |
@@ -2792,6 +2800,7 @@ private:
 3. **Permutaciones**:
 
 Las permutaciones representan el número de formas en que se pueden ordenar \( k \) elementos de un conjunto de \( n \) elementos, teniendo en cuenta el orden.
+
 - Fórmula de permutaciones sin repetición: \( P(n, k) = \frac{{n!}}{{(n-k)!}} \)
 - Fórmula de permutaciones con repetición: \( P(n_1, n_2, \ldots, n_k) = \frac{{n!}}{{n_1! \cdot n_2! \cdot \ldots \cdot n_k!}} \), donde \( n_1, n_2, \ldots, n_k \) son el número de elementos idénticos en cada categoría.
 
@@ -2824,9 +2833,10 @@ vector<vector<int>> getPermutations(const vector<int>& nums) {
 ```
 
 # Combinaciones
-Las combinaciones representan el número de formas en que se pueden seleccionar \( k \) elementos de un conjunto de \( n \) elementos, sin tener en cuenta el orden.
-- Fórmula: \( C(n, k) = \binom{n}{k} = \frac{{n!}}{{k!(n-k)!}} \), donde \( n! \) representa el factorial de \( n \).
 
+Las combinaciones representan el número de formas en que se pueden seleccionar \( k \) elementos de un conjunto de \( n \) elementos, sin tener en cuenta el orden.
+
+- Fórmula: \( C(n, k) = \binom{n}{k} = \frac{{n!}}{{k!(n-k)!}} \), donde \( n! \) representa el factorial de \( n \).
 
 ```cpp
 unsigned long long calcularCombinaciones(int n, int k) {
@@ -2857,7 +2867,6 @@ vector<vector<int>> getCombinations(const vector<int>& nums, int k) {
 }
 
 ```
-
 
 # Algebra Lineal
 
@@ -2909,6 +2918,7 @@ int main() {
     return 0;
 }
 ```
+
 ## Validar Solución
 
 ```cpp
@@ -3062,6 +3072,7 @@ int main() {
 }
 
 ```
+
 # Algoritmo de Mo
 
 ```cpp
@@ -3197,6 +3208,7 @@ int main() {
     return 0;
 }
 ```
+
 # Transformada Rapida de Fourier
 
 ```cpp
@@ -3322,9 +3334,11 @@ vector<int> KMPSearch(const string& text, const string& pattern) {
     return indices;
 }
 ```
+
 ## Algoritmo de Manacher
 
 Devuelve el substring palindromo más grande
+
 ```cpp
 string manacher(const string& s) {
     string T = "^#";
@@ -3407,10 +3421,9 @@ string findLCS(const string& X, const string& Y) {
 }
 ```
 
-
 # Fenwick Tree
 
-Un Fenwick Tree (también conocido como Binary Indexed Tree o BIT) es una estructura de datos que se utiliza para realizar consultas y actualizaciones eficientes en una secuencia de valores numéricos, como sumas acumulativas. 
+Un Fenwick Tree (también conocido como Binary Indexed Tree o BIT) es una estructura de datos que se utiliza para realizar consultas y actualizaciones eficientes en una secuencia de valores numéricos, como sumas acumulativas.
 
 ```cpp
 class FenwickTree {
@@ -3609,7 +3622,7 @@ int main() {
 }
 ```
 
-# Knapsack 
+# Knapsack
 
 ```cpp
 struct Item {
@@ -3750,6 +3763,7 @@ int main() {
     return 0;
 }
 ```
+
 # Identificar dos arboles isomorficos
 
 ```cpp
@@ -3956,6 +3970,7 @@ int main() {
     return 0;
 }
 ```
+
 # Problema del Agente Viajero DP O($n^2 2^n$)
 
 ```cpp
@@ -4173,15 +4188,15 @@ Matrix matrixPower(const Matrix &matrix, int n) {
     return result;
 }
 ```
+
 # Matemáticas
 
 # Probabliidad
 
-
 1. **Probabilidad**:
-- La probabilidad de un evento \( A \), denotada como \( P(A) \), se define como el número de resultados favorables al evento dividido por el número total de resultados posibles.
-     - Fórmula: \( P(A) = \frac{{\text{{Número de resultados favorables}}}}{{\text{{Número total de resultados posibles}}}} \)
 
+- La probabilidad de un evento \( A \), denotada como \( P(A) \), se define como el número de resultados favorables al evento dividido por el número total de resultados posibles.
+  - Fórmula: \( P(A) = \frac{{\text{{Número de resultados favorables}}}}{{\text{{Número total de resultados posibles}}}} \)
 
 1. **Probabilidad Total**:
    - Para eventos \( A_1, A_2, \ldots, A_n \) que forman una partición del espacio muestral, la probabilidad de un evento \( B \) se puede calcular como:
@@ -4209,8 +4224,6 @@ Matrix matrixPower(const Matrix &matrix, int n) {
    - La probabilidad de la unión de dos eventos \( A \) y \( B \) se puede calcular como la suma de las probabilidades de cada evento menos la probabilidad de su intersección:
      \[ P(A \cup B) = P(A) + P(B) - P(A \cap B) \]
 
- 
-
 ## Sucesiones
 
 1. **Números de Fibonacci**: Esta sucesión comienza con 0 y 1, y cada término posterior es la suma de los dos términos anteriores.
@@ -4237,11 +4250,8 @@ Matrix matrixPower(const Matrix &matrix, int n) {
 8. **Números de Pell**: Otra secuencia similar a Fibonacci, pero con diferentes valores iniciales.
    - Fórmula: \( P(n) = 2P(n-1) + P(n-2) \) con \( P(0) = 0 \) y \( P(1) = 1 \).
 
-
-
-9.  **Números de Mersenne**: Estos son números enteros que son una unidad menos que una potencia de dos.
+9. **Números de Mersenne**: Estos son números enteros que son una unidad menos que una potencia de dos.
     - Fórmula: \( M_n = 2^n - 1 \) donde \( n \) es un número primo.
-
 
 11. **Números de Stirling de Segundo Tipo**: Estos números cuentan el número de formas distintas de dividir un conjunto de \( n \) elementos en \( k \) conjuntos no vacíos.
     - Fórmula: Los números de Stirling de Segundo Tipo tienen una fórmula recursiva.
@@ -4277,6 +4287,7 @@ int main() {
     return 0;
 }
 ```
+
 ## Teorema del residuo chino
 
 ```cpp
@@ -4543,9 +4554,10 @@ long lcm(long a, long b) {
     return (a / gcd(a, b)) * b;
 }
 ```
+
 ## Modulo
 
-### pow(x,n) MOD m,
+### pow(x,n) MOD m
 
 ```cpp
 const long long MAX = static_cast<long long>(sqrt(numeric_limits<long long>::max()));
@@ -4711,7 +4723,6 @@ int main() {
     return 0;
 }
 ```
-
 
 ## Saber si son Coprimos
 
@@ -5027,6 +5038,7 @@ int main() {
     return 0;
 }
 ```
+
 ## Puntos mas cercanos
 
 ```cpp
@@ -5134,7 +5146,9 @@ int main() {
 ```
 
 ## Determinar si 3 puntos son coliniales
+
 Estan en el misma linea
+
 ```cpp
 const double EPS = 1e-9;
 
@@ -5308,9 +5322,11 @@ vector<pair<double, double>> lineCircleIntersection(
     }
 }
 ```
+
 ## Convertir puntos a forma general
 
 ax + b + c = 0
+
 ```cpp
 void segmentToGeneralForm(double x1, double y1, double x2, double y2, double &a, double &b, double &c) {
     a = y1 - y2;
@@ -5382,8 +5398,10 @@ int main() {
 ```
 
 ## Interseccion punto con Circulo
+
 Given a circle and a point around or inside the circle we wish to find place(s) of intersection
 of the lines from the point which are tangent to the circle.
+
 ```cpp
 struct Point {
     double x, y;
