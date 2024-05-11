@@ -1671,179 +1671,133 @@ void union_sets(T a, T b, vT& parent, vT& rank) {
 }
 ```
 
-### Union-Find
+## Disjoint Set
+
+Un conjunto disjunto es una estructura que agrupa elementos en diferentes conjuntos, donde cada conjunto no comparte elementos con los otros conjuntos.
+
+### Plantilla
 
 ```cpp
+template<typename T>
 class DisjointSet {
-    private:
-        vector<int> parent, rank;
+public:
+    using vT = vector<T>;
+    using vvT = vector<vT>;
 
-    public:
-        DisjointSet(int n) {
-            parent.resize(n+1);
-            rank.resize(n+1);
+    int n;
+    vT parent, rank, size;
+    enum Type { BASIC, SIZE, RANK };
+    Type type;
 
-            // Inicializar cada elemento como su propio padre
-            for(int i=0; i<=n; i++) {
-                parent[i] = i;
-                rank[i] = 0;
-            }
-        }
-
-        // Encontrar el padre de un elemento (con compresión de ruta)
-        int find(int u) {
-            if(parent[u] == u) return u;
-            return parent[u] = find(parent[u]);
-        }
-
-        // Unir dos conjuntos
-        void union_sets(int u, int v) {
-            int pu = find(u), pv = find(v);
-            if(pu == pv) return;
-
-            // Unir por rango
-            if(rank[pu] > rank[pv]) parent[pv] = pu;
-            else if(rank[pu] < rank[pv]) parent[pu] = pv;
-            else {
-                parent[pv] = pu;
-                rank[pu]++;
-            }
-        }
-};
-
-int main() {
-    int n = 5;
-    DisjointSet dsu(n);
-
-    dsu.union_sets(1, 2);
-    dsu.union_sets(3, 4);
-    dsu.union_sets(2, 4);
-
-    for(int i=1; i<=n; i++) {
-        cout << "Parent of " << i << " is " << dsu.find(i) << endl;
+    DisjointSet(int n, Type type = BASIC) {
+        this->n = n;
+        this->type = type;
+        parent.resize(n);
+        if (type == SIZE) size.resize(n, 1);
+        if (type == RANK) rank.resize(n, 0);
+        for (int i = 0; i < n; ++i) make(i);
     }
 
-    return 0;
+    void make(T v) {
+        parent[v] = v;
+    }
+
+    T find(T v) {
+        if (v == parent[v]) return v;
+        return parent[v] = find(parent[v]);
+    }
+
+    void unionSet(T a, T b) {
+        a = find(a);
+        b = find(b);
+        if (a != b) parent[b] = a;
+    }
+
+    bool sameGroup(T a, T b) {
+        return find(a) == find(b);
+    }
+ 
+    vvT groups() {
+        vvT group(n), ans;
+        forn(i, 0, n)
+            group[find(i)].pb(i);
+
+        for (auto& g : group)
+            if (!g.empty()) ans.pb(g);
+
+        return ans;
+    }
+};
+
+int main(){
+    DisjointSet<int> ds(5);
+
+    ds.unionSet(0, 1);
+    ds.unionSet(2, 3);
+
+    cout << (ds.sameGroup(0, 1) ? "Yes" : "No") << endl;
+    cout << (ds.sameGroup(0, 2) ? "Yes" : "No") << endl;
+
+    auto groups = ds.groups();
+    for (auto& g : groups) {
+        for (auto& e : g)  cout << e << " ";
+        cout << endl;
+    }
 }
 ```
 
-#### Path-Compression
+Existen optimizaciones que busca unir conjuntos basados en el rango o tamaño del conjunto.
 
-```cpp
-class DisjointSet {
-private:
-    vector<int> parent, rank;
+### Union By Rank
 
-public:
-    DisjointSet(int n) {
-        parent.resize(n + 1);
-        rank.resize(n + 1);
-
-        // Inicializar cada elemento como su propio padre
-        for (int i = 0; i <= n; i++) {
-            parent[i] = i;
-            rank[i] = 0;
-        }
+```
+void unionByRank(T a, T b) {
+    a = find(a);
+    b = find(b);
+    if (a != b) {
+        if (rank[a] < rank[b]) swap(a, b);
+        parent[b] = a;
+        if (rank[a] == rank[b]) rank[a]++;
     }
+    
+}
 
-    // Encontrar el padre de un elemento (con compresión de ruta)
-    int find(int u) {
-        if (parent[u] == u) return u;
-        return parent[u] = find(parent[u]);
-    }
+int main(){
+    DisjointSet<int> ds(5, DisjointSet<int>::RANK);
 
-    // Unir dos conjuntos
-    void union_sets(int u, int v) {
-        int pu = find(u), pv = find(v);
-        if (pu == pv) return;
-
-        // Unir por rango
-        if (rank[pu] > rank[pv])
-            parent[pv] = pu;
-        else if (rank[pu] < rank[pv])
-            parent[pu] = pv;
-        else {
-            parent[pv] = pu;
-            rank[pu]++;
-        }
-    }
-};
-
-int main() {
-    int n = 5;
-    DisjointSet dsu(n);
-
-    dsu.union_sets(1, 2);
-    dsu.union_sets(3, 4);
-    dsu.union_sets(2, 4);
-
-    for (int i = 1; i <= n; i++) {
-        cout << "Parent of " << i << " is " << dsu.find(i) << endl;
-    }
-
-    return 0;
+    ds.unionByRank(0, 1);
+    ds.unionByRank(2, 3);
 }
 ```
 
-### Prim
-El algoritmo de Prim es una técnica utilizada en teoría de grafos para encontrar el árbol de expansión mínima de un grafo conexo, lo que significa que busca la forma más eficiente de conectar todos los nodos del grafo sin crear ciclos y minimizando la suma de los pesos de las aristas seleccionadas
+### Union By Size
 
 ```cpp
-class Grafo {
-    int size; // Número de nodos del grafo
-    vector<vector<pair<int, int>>> grafo; // Lista de adyacencia (nodo, peso)
-
-public:
-    Grafo(int n) : size(n) {
-        grafo.resize(n);
-    }
-
-    void add(int u, int v, int peso) {
-        grafo[u].push_back({v, peso});
-        grafo[v].push_back({u, peso});
-    }
-
-    void prim() {
-        vector<bool> visitado(size, false);
-        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> minHeap;
-
-        int aristasArbol = 0;
-        int costoTotal = 0;
-
-        minHeap.push({0, 0});
-
-        while (!minHeap.empty() && aristasArbol < size - 1) {
-            int u = minHeap.top().second;
-            int peso = minHeap.top().first;
-            minHeap.pop();
-
-            if (!visitado[u]) {
-                visitado[u] = true;
-                costoTotal += peso;
-
-                for (const pair<int, int>& vecino : grafo[u]) {
-                    int v = vecino.first;
-                    int pesoAr = vecino.second;
-                    if (!visitado[v]) {
-                        minHeap.push({pesoAr, v});
-                    }
-                }
-
-                aristasArbol++;
-            }
+void unionBySize(T a, T b) {
+        a = find(a);
+        b = find(b);
+        if (a != b) {
+            if (size[a] < size[b]) swap(a, b);
+            parent[b] = a;
+            size[a] += size[b];
         }
+}
 
-        cout << "Árbol de expansión mínima:" << endl;
-        cout << "Arista - Peso" << endl;
-        for (int i = 1; i < size; i++) {
-            cout << "Arista " << i << ": " << i - 1 << " - " << i << " Peso: " << grafo[i][0].second << endl;
-        }
-        cout << "Costo total del árbol: " << costoTotal << endl;
-    }
-};
+int sizeOfGroup(T a) {
+    return size[find(a)];
+}
+
+int main(){
+    DisjointSet<int> ds(5, DisjointSet<int>::SIZE);
+    ds.unionBySize(0, 1);
+    ds.unionBySize(2, 3);
+
+    cout << (ds.sameGroup(0, 1) ? "Yes" : "No") << endl;
+    cout << (ds.sameGroup(0, 2) ? "Yes" : "No") << endl;
+
+    cout << ds.sizeOfGroup(0) << endl;
+}
 ```
-## Grafos Dirigidos Aciclicos
-
 
 ### Oredenamiento Topologico
 Ordenar los nodos de un grafo dirigido de manera que ningún nodo preceda a sus nodos dependientes,garantiza que se siga un orden coherente y sin conflictos en situaciones en las que el orden es esencial.
@@ -1891,64 +1845,7 @@ void ordenacionTopologica() {
 }
 ```
 
-## Componentes Conexas
 
-Conjunto de nodos que están interconectados entre sí por caminos, lo que significa que se puede llegar de cualquier nodo a cualquier otro nodo dentro de esa componente siguiendo aristas del grafo. En otras palabras, es un grupo de nodos que están "conectados" entre sí en el grafo, y no tienen conexiones directas con nodos fuera de esa componente.
-```cpp
-void dfsTarjan(int u, vector<int>& bajo, vector<int>& descubrimiento, stack<int>& pila, vector<bool>&enPila, vector<vector<int>>& componentes, int& tiempo) {
-    descubrimiento[u] = bajo[u] = tiempo++;
-    pila.push(u);
-    enPila[u] = true;
-
-    for (auto nodo : grafo[u]) {
-        int v = nodo.destino;
-
-        if (descubrimiento[v] == -1) {
-            dfsTarjan(v, bajo, descubrimiento, pila, enPila, componentes, tiempo);
-            bajo[u] = min(bajo[u], bajo[v]);
-        } else if (enPila[v]) {
-            bajo[u] = min(bajo[u], descubrimiento[v]);
-        }
-    }
-
-    if (descubrimiento[u] == bajo[u]) {
-        vector<int> componente;
-        int v;
-        do {
-            v = pila.top();
-            pila.pop();
-            enPila[v] = false;
-            componente.push_back(v);
-        } while (v != u);
-
-        componentes.push_back(componente);
-    }
-}
-
-void imprimirComponentesFuertementeConexas() {
-    vector<int> bajo(size, -1);
-    vector<int> descubrimiento(size, -1);
-    vector<bool> enPila(size, false);
-    stack<int> pila;
-    vector<vector<int>> componentes;
-    int tiempo = 0;
-
-    for (int i = 0; i < size; i++) {
-        if (descubrimiento[i] == -1) {
-            dfsTarjan(i, bajo, descubrimiento, pila, enPila, componentes, tiempo);
-        }
-    }
-
-    cout << "Componentes Fuertemente Conexas:" << endl;
-    for (int i = 0; i < componentes.size(); ++i) {
-        cout << "Componente " << i + 1 << ": ";
-        for (int j = 0; j < componentes[i].size(); ++j) {
-            cout << componentes[i][j] << " ";
-        }
-        cout << endl;
-    }
-}
-```
 
 
 ## Lowest Common Ancestor
