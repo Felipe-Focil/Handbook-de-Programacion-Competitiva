@@ -1,3 +1,10 @@
+# Competitive Programming Handbook
+
+## Autor: Felipe Rafael Focil Mendoza
+
+## Version 1.3.2
+
+## Fecha 10/05/2024
 
 # Respuestas del problema
 
@@ -41,6 +48,52 @@ Tu código esta bien, pero lo imprimiste en el formato incorrecto
 
 Levanta tu mano y pide al staff que te den un globo.
 
+# Comandos de Compilación desde Terminal
+
+Considere $X$ como la letra del problema, se recomienda nombrar el archivo como $X.cpp$,por ejemplo si se esta resolviendo el problema $B$, el nombre del archivo será $B.cpp$.
+
+## Linux
+
+### Compilar
+
+```bash
+g++ -o X X.cpp
+```
+
+### Ejecutar
+
+```bash
+./X
+```
+
+## Windows
+
+### Compilar
+
+```bash
+g++ -o X.exe X.cpp
+```
+
+### Ejecutar
+
+```bash
+X.exe
+```
+
+## Mac OS X
+
+### Compilar
+
+```bash
+g++ -o X X.cpp
+```
+
+### Ejecutar
+
+```bash
+./X
+```
+
 # Plantilla de código inicial
 
 ```cpp
@@ -79,10 +132,7 @@ int main() {
     FIN;
 
     int t = 1;
-
-    
     cin >> t; // COMMENT THIS ONLY HAS ONE CASE
-
     while (t--) {
         _main();
     }
@@ -109,6 +159,20 @@ int main() {
 | `float`                | 7                    |
 | `double`               | 15                   |
 | `long double`          | 19                   |
+
+# Tiempo de Complejidad
+
+| n               | Possible complexities    |
+| --------------- | -------------------------|
+| n ≤ 10          | O(n!), O(n^7), O(n^6)    |
+| n ≤ 20          | O(2^n * n), O(n^5)       |
+| n ≤ 80          | O(n^4)                    |
+| n ≤ 400         | O(n^3)                    |
+| n ≤ 7500        | O(n^2)                    |
+| n ≤ 7 * 10^4    | O(n√n)                    |
+| n ≤ 5 * 10^5    | O(n log n)                |
+| n ≤ 5 * 10^6    | O(n)                      |
+| n ≤ 10^18       | O(log^2 n), O(log n), O(1)|
 
 # End of File
 
