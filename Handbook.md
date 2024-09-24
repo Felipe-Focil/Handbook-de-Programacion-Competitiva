@@ -423,6 +423,21 @@ Existen ciertas propiedades para saber si un número es divisible entre un numer
 | 48     | Si es divisible entre 3 y 16                               |        |                                                             |
 | 50     | Si es divisible entre 2 y 25                               |        |                                                             |
 
+## Obtener la cantidad de divisores
+
+Precomputar la cantidad de divisores en $O(n \log{n})$
+
+```cpp
+vi getDivisors(int n){
+    vi ans(n+1,0);
+    forn(i,1,n+1){
+        for (int j = i; j <= n; j += i)
+            ans[j]++;
+    }
+    return ans;   
+}
+```
+
 # Números primos
 
 ## Criba de Eratostenes
