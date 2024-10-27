@@ -1,5 +1,22 @@
-#include <bits/stdc++.h>
+/*------------------------------------------------------------------------------
+                           File Name                                        
+                           Grafos.cpp                                       
+--------------------------------------------------------------------------------
+                            Description                                      
+      En este archivo se encuentra ejemplos de uso de la clase             
+      Graph para la creacion y uso de grafos                                
+                                                                            
+                                                                            
+--------------------------------------------------------------------------------
+                            Files History
 
+        Name        Date        Description
+        ffocilme    10/26/24    Add comments and header information    
+        ffocilme    05/10/24    Add topological sort
+        ffocilme    05/09/24    Creation
+--------------------------------------------------------------------------------
+*/
+#include <bits/stdc++.h>
 #define FIN ios::ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define endl '\n'
 #define forn(i,a,b) for(int i = int(a); i < int(b);i++)
@@ -21,19 +38,19 @@ using vvi = vector<vi>;
 using vb = vector<bool>;
 using pi = pair<int, int>;
 
-template<typename T>
-class Graph {
+template<typename T> // Plantilla Generica de Grafo
+class Graph { 
 public:
-    int n;
-    using vT = vector<T>;
-    using vvT = vector<vT>;
-    vvT adj;
-    Graph(int n) {
+    int n; // Tamaño del Grafo
+    using vT = vector<T>; // Vector Generico
+    using vvT = vector<vT>; // Matriz Generica
+    vvT adj; // Vertices
+    Graph(int n) { // Cantidad de Vertices
         this->n = n;
         adj.resize(n);
     }
 
-    Graph(int n, vvi& mat) {
+    Graph(int n, vvi& mat) { // Matriz de Adyacencia
         this->n = n;
         adj = mat;
     }
@@ -44,6 +61,7 @@ public:
             adj[v].push_back(u);
     }
 
+    // Busqueda en Profunidad
     void dfs(int u, vb& visited) {
         cout << u << " ";
         for (auto v : adj[u]) {
@@ -53,7 +71,7 @@ public:
             }
         }
     }
-
+    
     void dfsComponent(int i, vT& c, vb& u) {
         u[i] = 1;
         c.push_back(i);
@@ -62,6 +80,8 @@ public:
                 dfsComponent(v, c, u);
         }
     }
+
+    // Componentes Conexas
     vvT findComponents() {
         vb visited(n, false);
         vvT components;
@@ -75,6 +95,7 @@ public:
         return components;
     }
 
+    // Puentes
     void findBridges() {
         int timer = 0;
         vb visited(n, false);
@@ -106,6 +127,7 @@ public:
         cout << u << " " << v << endl;
     }
 
+    // Puntos de Articulacion
     void findArticulationsPoints() {
         int timer = 0;
         vb visited(n, false);
@@ -137,6 +159,7 @@ public:
         cout << u << endl;
     }
 
+    // Deteccion de Ciclos
     vi findCycle() {
         vi color(n, 0);
         vi parent(n, -1);
@@ -174,6 +197,7 @@ public:
         return false;
     }
 
+    // Camino Euleriano
     vi eulerianPath() {
         // Assuming adj is adjacency matrix
         vi deg(n);
@@ -253,6 +277,7 @@ public:
         return path;
     }
 
+    // Revisar si un grafo es Bipartito
     bool isBipartite() {
         vi side(n, -1);
         bool ans = true;
@@ -279,7 +304,7 @@ public:
         }
         return ans;
     }
-
+    // Ordenamiento Topologico
     vT topologicalSort() {
         vi degree(n, 0);
         vT topoSort;
@@ -309,14 +334,21 @@ public:
     }
 };
 
+// Ejemplos de uso:  Puedes remplazarlo por un main
+// Esta dividio en multiples funciones para no generar conflictos de nombres
+
 void exmapleComponents() {
+    //Construccion del Grafo
     Graph<int> g(7);
     g.add(0, 1);
     g.add(1, 2);
     g.add(2, 4);
     g.add(3, 5);
+    
+    //Devuelve una lista de adyacencia con los nodos que forman parte de
+    //la misma componente
     vvi components = g.findComponents();
-
+    
     for (const auto& component : components) {
         for (int node : component)
             cout << node << " ";
@@ -335,9 +367,8 @@ void exampleBridges() {
     g.add(1, 4);
     g.add(3, 4);
     g.add(3, 5);
-
-    g.findBridges();
-}
+    // Encuentra las aristas que son necesarias para conectar todo el grafo
+    // El procesamiento de estos puentes se encuentra en 
 
 void exampleArticulationsPoints() {
     Graph<int> g(7);
@@ -351,6 +382,9 @@ void exampleArticulationsPoints() {
     g.add(4, 6);
 
     g.findArticulationsPoints();
+    // Encuentra los vertices que son necesarios para conectar todo el grafo
+    // El procesamiento de estos puntos de articulacion
+    // se encuentra en IS_CUT_POINT
 }
 
 void exampleCycle() {
@@ -359,7 +393,8 @@ void exampleCycle() {
     g.add(0, 2);
     g.add(2, 1);
     g.add(0, 3);
-
+    
+    //Devuelve una lista con los vertices que forman un ciclo
     vector<int> cycle = g.findCycle();
     if (!cycle.empty()) {
         cout << "Ciclo encontrado: ";
@@ -369,14 +404,17 @@ void exampleCycle() {
     }
     else
         cout << "No se encontró ningún ciclo." << endl;
-
 }
 
 void exampleEulerianPath() {
+    //Matriz de adyacencia de ejemplo
     vvi mat = { {0,1,1,0},{1,0,1,1},{1,1,0,1},{0,1,1,0} };
     Graph<int>g(4, mat);
-
+    
+    //Devuelve una lista con el orden que se tienen que visitar todos
+    //los vertices del grafo sin repetir
     vector<int> eulerianPath = g.eulerianPath();
+    
     if (!eulerianPath.empty()) {
         cout << "Camino euleriano encontrado: ";
         for (int node : eulerianPath)
@@ -394,6 +432,9 @@ void exampleCheckBipartite() {
     g.add(2, 3, true);
     g.add(3, 0, true);
     // g.add(1, 3, true); // Add to make it not bipartite
+
+    // Devuelve un booleano si el grafo se puede dividir en exactamente
+    // dos conjutnos disconjuntos
     cout << ((g.isBipartite()) ? "YES" : "NO") << endl;
 
 }
