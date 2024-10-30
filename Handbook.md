@@ -357,6 +357,96 @@ int binary_to_int(string s) {
 }
 ```
 
+## Operaciones Basicas con bitset
+
+Agrega operaciones basicas usando bitset, esto es recomendable solo en el caso
+que se necesite realizar operaciones con numero que sean mayores a $2^{64}$, dado
+que un long long no soportaria este tipo de tamaño. En caso de que el numero
+a representar se menor a $2 * 2^{64} - 1$, se recomienda usar la funcion `.to_ullong`
+
+```cpp
+#define MXSZ    64
+#define bits    bitset<MXSZ>
+
+//Suma
+bits operator+(const bits &x, const bits &y)
+{
+    bits r;
+    bool a, b, c = 0;
+    forn(i,0,MXSZ){   
+        a = x[i] , b = y[i];
+        r[i] = a ^ b ^ c;
+        c  = (a & b) | (a & c) | (b & c);
+    }
+    return r;
+}
+// RESTA
+bits operator-(const bits &x, const bits &y) {
+    bits r;
+    bool a, b, c = 0;
+    for (int i = 0; i < MXSZ; i++) {
+        a = x[i];
+        b = y[i];
+        r[i] = a ^ b ^ c;            
+        c = (!a & b) | (!a & c) | (b & c);
+    }
+    return r;
+}
+
+// MULTIPLICACION
+bits operator*(const bits &x, const bits &y) {
+    bits r,c;
+    for (int i = 0; i < MXSZ; i++) {
+        if (y[i]) {
+            c = x << i;
+            r = r + c;  
+        }
+    }
+    return r;
+}
+
+//Requerido para division
+bool operator>=(const bits &x, const bits &y){
+    for(int i = MXSZ - 1; i >= 0; i--)
+       if(x[i] != y[i]) return (x[i] > y[i]);
+    return 1;
+}
+
+// DIVISION
+bits operator/(const bits &x, const bits &y) {
+    bits r;
+    bits c = x;
+    for (int i = MXSZ - 1; i >= 0; i--) {
+        if (c >> i >= y) {
+            r[i] = 1;
+            c = c - (y << i);
+        }
+    }
+    return r;
+}
+
+
+// MODULO
+bits operator%(const bits &x, const bits &y) {
+    bits r = x;
+    for (int i = MXSZ - 1; i >= 0; i--)
+        if (r >> i >= y)  r = r - (y << i);
+    return r;
+}
+
+// POTENCIA
+bits pow(const bits &x, const bits &y) {
+    bits r = 1;
+    bits b = x;
+    for (int i = 0; i < MXSZ; i++) {
+        if (y[i]) r = r * b;
+        b = b * b;
+    }
+    return r;
+}
+```
+
+
 ## Código de Gray
 
 El código Gray es un sistema numérico en el que los números consecutivos difieren en un solo bit.Cada número en el código Gray se representa en binario, donde un bit cambia su estado entre números consecutivos, lo que facilita la detección y corrección de errores.
