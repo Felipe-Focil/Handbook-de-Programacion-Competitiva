@@ -2,9 +2,9 @@
 
 ## Autor: Felipe Rafael Focil Mendoza
 
-## Version 1.3.2
+## Version 1.3.3
 
-## Fecha 10/05/2024
+## Fecha 06/11/2024
 
 # Respuestas del problema
 
@@ -164,15 +164,15 @@ int main() {
 
 | n               | Possible complexities    |
 | --------------- | -------------------------|
-| n ≤ 10          | O(n!), O(n^7), O(n^6)    |
-| n ≤ 20          | O(2^n * n), O(n^5)       |
-| n ≤ 80          | O(n^4)                    |
-| n ≤ 400         | O(n^3)                    |
-| n ≤ 7500        | O(n^2)                    |
-| n ≤ 7 * 10^4    | O(n√n)                    |
-| n ≤ 5 * 10^5    | O(n log n)                |
-| n ≤ 5 * 10^6    | O(n)                      |
-| n ≤ 10^18       | O(log^2 n), O(log n), O(1)|
+| n <= 10          | O(n!), O(n^7), O(n^6)    |
+| n <= 20          | O(2^n * n), O(n^5)       |
+| n <= 80          | O(n^4)                    |
+| n <= 400         | O(n^3)                    |
+| n <= 7500        | O(n^2)                    |
+| n <= 7 * 10^4    | O(n√n)                    |
+| n <= 5 * 10^5    | O(n log n)                |
+| n <= 5 * 10^6    | O(n)                      |
+| n <= 10^18       | O(log^2 n), O(log n), O(1)|
 
 # End of File
 
@@ -2918,12 +2918,17 @@ private:
 
 # Permutaciones
 
-3. **Permutaciones**:
+Las permutaciones representan el número de formas en que se pueden ordenar \( k \) elementos de un conjunto de \( n \) elementos,  
+- **Fórmula de permutaciones sin repetición**: 
+  $$
+  P(n, k) = \frac{n!}{(n-k)!}
+  $$
+- **Fórmula de permutaciones con repetición**: 
+  $$
+  P(n_1, n_2, \ldots, n_k) = \frac{n!}{n_1! \cdot n_2! \cdot \ldots \cdot n_k!}
+  $$
 
-Las permutaciones representan el número de formas en que se pueden ordenar \( k \) elementos de un conjunto de \( n \) elementos, teniendo en cuenta el orden.
 
-- Fórmula de permutaciones sin repetición: \( P(n, k) = \frac{{n!}}{{(n-k)!}} \)
-- Fórmula de permutaciones con repetición: \( P(n_1, n_2, \ldots, n_k) = \frac{{n!}}{{n_1! \cdot n_2! \cdot \ldots \cdot n_k!}} \), donde \( n_1, n_2, \ldots, n_k \) son el número de elementos idénticos en cada categoría.
 
 ```cpp
 unsigned long long factorial(int n) {
@@ -2955,9 +2960,10 @@ vector<vector<int>> getPermutations(const vector<int>& nums) {
 
 # Combinaciones
 
-Las combinaciones representan el número de formas en que se pueden seleccionar \( k \) elementos de un conjunto de \( n \) elementos, sin tener en cuenta el orden.
+Las combinaciones representan el número de formas en que se pueden seleccionar 
+$k$ elementos de un conjunto de $n$ elementos, sin tener en cuenta el orden.
 
-- Fórmula: \( C(n, k) = \binom{n}{k} = \frac{{n!}}{{k!(n-k)!}} \), donde \( n! \) representa el factorial de \( n \).
+- Fórmula: $C(n, k) = \binom{n}{k} = \frac{{n!}}{{k!(n-k)!}}$, donde $n!$ representa el factorial de $n$.
 
 ```cpp
 unsigned long long calcularCombinaciones(int n, int k) {
@@ -4324,72 +4330,135 @@ Matrix matrixPower(const Matrix &matrix, int n) {
 
 # Matemáticas
 
-# Probabliidad
+
+
+## Uso Angulos
+
+# Matemáticas
+
+# Matemáticas
+
+## Probabilidad
 
 1. **Probabilidad**:
 
-- La probabilidad de un evento \( A \), denotada como \( P(A) \), se define como el número de resultados favorables al evento dividido por el número total de resultados posibles.
-  - Fórmula: \( P(A) = \frac{{\text{{Número de resultados favorables}}}}{{\text{{Número total de resultados posibles}}}} \)
+   - La probabilidad de un evento $A$, denotada como $P(A)$, se define como el número de resultados favorables al evento dividido por el número total de resultados posibles.
+     - Fórmula: $P(A) = \frac{\text{Número de resultados favorables}}{\text{Número total de resultados posibles}}$
 
-1. **Probabilidad Total**:
-   - Para eventos \( A_1, A_2, \ldots, A_n \) que forman una partición del espacio muestral, la probabilidad de un evento \( B \) se puede calcular como:
-     \[ P(B) = \sum_{i=1}^{n} P(A_i) \cdot P(B|A_i) \]
+2. **Probabilidad Total**:
+   - Para eventos $A_1, A_2, \ldots, A_n$ que forman una partición del espacio muestral, la probabilidad de un evento $B$ se puede calcular como: $P(B) = \sum_{i=1}^{n} P(A_i) \cdot P(B|A_i)$
 
-2. **Teorema de Bayes**:
-   - Permite calcular la probabilidad condicional inversa. Para dos eventos \( A \) y \( B \) con \( P(B) > 0 \), se puede calcular la probabilidad de \( A \) dado \( B \) como:
-     \[ P(A|B) = \frac{{P(B|A) \cdot P(A)}}{{P(B)}} \]
+3. **Teorema de Bayes**:
+   - Permite calcular la probabilidad condicional inversa. Para dos eventos $A$ y $B$ con $P(B) > 0$, se puede calcular la probabilidad de $A$ dado $B$ como: $P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}$
 
-3. **Regla del Producto**:
-   - La probabilidad de la intersección de dos eventos \( A \) y \( B \) se puede calcular como el producto de la probabilidad de \( A \) dado \( B \) y la probabilidad de \( B \) como:
-     \[ P(A \cap B) = P(A|B) \cdot P(B) \]
+4. **Regla del Producto**:
+   - La probabilidad de la intersección de dos eventos $A$ y $B$ se puede calcular como el producto de la probabilidad de $A$ dado $B$ y la probabilidad de $B$ como: $P(A \cap B) = P(A|B) \cdot P(B)$
 
-4. **Probabilidad Conjunta**:
-   - La probabilidad de que dos eventos \( A \) y \( B \) ocurran simultáneamente se puede denotar como \( P(A \cap B) \).
+5. **Probabilidad Conjunta**:
+   - La probabilidad de que dos eventos $A$ y $B$ ocurran simultáneamente se puede denotar como $P(A \cap B)$.
 
-5. **Independencia de Eventos**:
-   - Dos eventos \( A \) y \( B \) son independientes si y solo si la probabilidad de que ocurra \( A \) dado \( B \) es igual a la probabilidad de \( A \), y viceversa:
-     \[ P(A|B) = P(A) \text{ y } P(B|A) = P(B) \]
+6. **Independencia de Eventos**:
+   - Dos eventos $A$ y $B$ son independientes si y solo si la probabilidad de que ocurra $A$ dado $B$ es igual a la probabilidad de $A$, y viceversa: $P(A|B) = P(A)$ y $P(B|A) = P(B)$
 
-6. **Probabilidad Condicional**:
-   - La probabilidad de que ocurra un evento \( A \) dado que ya ha ocurrido un evento \( B \) se denota como \( P(A|B) \).
+7. **Probabilidad Condicional**:
+   - La probabilidad de que ocurra un evento $A$ dado que ya ha ocurrido un evento $B$ se denota como $P(A|B)$.
 
-7. **Regla de la Suma**:
-   - La probabilidad de la unión de dos eventos \( A \) y \( B \) se puede calcular como la suma de las probabilidades de cada evento menos la probabilidad de su intersección:
-     \[ P(A \cup B) = P(A) + P(B) - P(A \cap B) \]
+8. **Regla de la Suma**:
+   - La probabilidad de la unión de dos eventos $A$ y $B$ se puede calcular como la suma de las probabilidades de cada evento menos la probabilidad de su intersección: $P(A \cup B) = P(A) + P(B) - P(A \cap B)$
 
 ## Sucesiones
 
 1. **Números de Fibonacci**: Esta sucesión comienza con 0 y 1, y cada término posterior es la suma de los dos términos anteriores.
-   - Fórmula: \( F(n) = F(n-1) + F(n-2) \) con \( F(0) = 0 \) y \( F(1) = 1 \).
+   - Fórmula: $F(n) = F(n-1) + F(n-2)$ con $F(0) = 0$ y $F(1) = 1$.
 
 2. **Números de Catalan**: Estos números surgen en diversos problemas de combinatoria y se definen de la siguiente manera:
-   - Fórmula: \( C(n) = \frac{{(2n)!}}{{(n+1)!n!}} \) con \( C(0) = 1 \).
+   - Fórmula: $C(n) = \frac{(2n)!}{(n+1)!n!}$ con $C(0) = 1$.
 
 3. **Números Triangulares**: La secuencia de números triangulares se forma al sumar los números naturales consecutivos.
-   - Fórmula: \( T(n) = \frac{{n(n+1)}}{2} \) con \( T(1) = 1 \).
+   - Fórmula: $T(n) = \frac{n(n+1)}{2}$ con $T(1) = 1$.
 
 4. **Números Cuadrados**: Esta sucesión representa los cuadrados de los números naturales.
-   - Fórmula: \( S(n) = n^2 \) con \( S(1) = 1 \).
+   - Fórmula: $S(n) = n^2$ con $S(1) = 1$.
 
 5. **Números Primos**: La secuencia de números primos son aquellos que solo son divisibles por 1 y por sí mismos.
    - No hay una fórmula cerrada general para los números primos.
 
 6. **Números Triangulares Centrales**: Estos números surgen en la geometría de los polígonos y se relacionan con los números triangulares.
-   - Fórmula: \( TC(n) = \frac{{n(n+1)(2n+1)}}{6} \) con \( TC(1) = 1 \).
+   - Fórmula: $TC(n) = \frac{n(n+1)(2n+1)}{6}$ con $TC(1) = 1$.
 
 7. **Números de Lucas**: Similar a la sucesión de Fibonacci pero con diferentes valores iniciales.
-   - Fórmula: \( L(n) = L(n-1) + L(n-2) \) con \( L(0) = 2 \) y \( L(1) = 1 \).
+   - Fórmula: $L(n) = L(n-1) + L(n-2)$ con $L(0) = 2$ y $L(1) = 1$.
 
 8. **Números de Pell**: Otra secuencia similar a Fibonacci, pero con diferentes valores iniciales.
-   - Fórmula: \( P(n) = 2P(n-1) + P(n-2) \) con \( P(0) = 0 \) y \( P(1) = 1 \).
+   - Fórmula: $P(n) = 2P(n-1) + P(n-2)$ con $P(0) = 0$ y $P(1) = 1$.
 
 9. **Números de Mersenne**: Estos son números enteros que son una unidad menos que una potencia de dos.
-    - Fórmula: \( M_n = 2^n - 1 \) donde \( n \) es un número primo.
+    - Fórmula: $M_n = 2^n - 1$ donde $n$ es un número primo.
 
-11. **Números de Stirling de Segundo Tipo**: Estos números cuentan el número de formas distintas de dividir un conjunto de \( n \) elementos en \( k \) conjuntos no vacíos.
+10. **Números de Stirling de Segundo Tipo**: Estos números cuentan el número de formas distintas de dividir un conjunto de $n$ elementos en $k$ conjuntos no vacíos.
+    - Fórmula: Los números de Stirling de Segundo Tipo tienen una fórmula recursiva.
+# Matemáticas
+
+## Probabilidad
+
+1. **Probabilidad**:
+
+   - La probabilidad de un evento $A$, denotada como $P(A)$, se define como el número de resultados favorables al evento dividido por el número total de resultados posibles.
+     - Fórmula: $P(A) = \frac{\text{Número de resultados favorables}}{\text{Número total de resultados posibles}}$
+
+2. **Probabilidad Total**:
+   - Para eventos $A_1, A_2, \ldots, A_n$ que forman una partición del espacio muestral, la probabilidad de un evento $B$ se puede calcular como: $P(B) = \sum_{i=1}^{n} P(A_i) \cdot P(B|A_i)$
+
+3. **Teorema de Bayes**:
+   - Permite calcular la probabilidad condicional inversa. Para dos eventos $A$ y $B$ con $P(B) > 0$, se puede calcular la probabilidad de $A$ dado $B$ como: $P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}$
+
+4. **Regla del Producto**:
+   - La probabilidad de la intersección de dos eventos $A$ y $B$ se puede calcular como el producto de la probabilidad de $A$ dado $B$ y la probabilidad de $B$ como: $P(A \cap B) = P(A|B) \cdot P(B)$
+
+5. **Probabilidad Conjunta**:
+   - La probabilidad de que dos eventos $A$ y $B$ ocurran simultáneamente se puede denotar como $P(A \cap B)$.
+
+6. **Independencia de Eventos**:
+   - Dos eventos $A$ y $B$ son independientes si y solo si la probabilidad de que ocurra $A$ dado $B$ es igual a la probabilidad de $A$, y viceversa: $P(A|B) = P(A)$ y $P(B|A) = P(B)$
+
+7. **Probabilidad Condicional**:
+   - La probabilidad de que ocurra un evento $A$ dado que ya ha ocurrido un evento $B$ se denota como $P(A|B)$.
+
+8. **Regla de la Suma**:
+   - La probabilidad de la unión de dos eventos $A$ y $B$ se puede calcular como la suma de las probabilidades de cada evento menos la probabilidad de su intersección: $P(A \cup B) = P(A) + P(B) - P(A \cap B)$
+
+## Sucesiones
+
+1. **Números de Fibonacci**: Esta sucesión comienza con 0 y 1, y cada término posterior es la suma de los dos términos anteriores.
+   - Fórmula: $F(n) = F(n-1) + F(n-2)$ con $F(0) = 0$ y $F(1) = 1$.
+
+2. **Números de Catalan**: Estos números surgen en diversos problemas de combinatoria y se definen de la siguiente manera:
+   - Fórmula: $C(n) = \frac{(2n)!}{(n+1)!n!}$ con $C(0) = 1$.
+
+3. **Números Triangulares**: La secuencia de números triangulares se forma al sumar los números naturales consecutivos.
+   - Fórmula: $T(n) = \frac{n(n+1)}{2}$ con $T(1) = 1$.
+
+4. **Números Cuadrados**: Esta sucesión representa los cuadrados de los números naturales.
+   - Fórmula: $S(n) = n^2$ con $S(1) = 1$.
+
+5. **Números Primos**: La secuencia de números primos son aquellos que solo son divisibles por 1 y por sí mismos.
+   - No hay una fórmula cerrada general para los números primos.
+
+6. **Números Triangulares Centrales**: Estos números surgen en la geometría de los polígonos y se relacionan con los números triangulares.
+   - Fórmula: $TC(n) = \frac{n(n+1)(2n+1)}{6}$ con $TC(1) = 1$.
+
+7. **Números de Lucas**: Similar a la sucesión de Fibonacci pero con diferentes valores iniciales.
+   - Fórmula: $L(n) = L(n-1) + L(n-2)$ con $L(0) = 2$ y $L(1) = 1$.
+
+8. **Números de Pell**: Otra secuencia similar a Fibonacci, pero con diferentes valores iniciales.
+   - Fórmula: $P(n) = 2P(n-1) + P(n-2)$ con $P(0) = 0$ y $P(1) = 1$.
+
+9. **Números de Mersenne**: Estos son números enteros que son una unidad menos que una potencia de dos.
+    - Fórmula: $M_n = 2^n - 1$ donde $n$ es un número primo.
+
+10. **Números de Stirling de Segundo Tipo**: Estos números cuentan el número de formas distintas de dividir un conjunto de $n$ elementos en $k$ conjuntos no vacíos.
     - Fórmula: Los números de Stirling de Segundo Tipo tienen una fórmula recursiva.
 
-## Uso Angulos
 
 ```cpp
 #include <iostream>
@@ -4915,7 +4984,7 @@ double gradosARadianes(double grados) {
 //2D
 double angleBetweenVectors(double v1x, double v1y, double v2x, double v2y) {
     // Para determinar el ángulo entre dos vectores v1 y v2, podemos usar la siguiente fórmula:
-    // dot(v1, v2) = len(v1) * len(v2) * cos(θ) y resolver para θ, donde dot(a, b) es el producto escalar
+    // dot(v1, v2) = len(v1) * len(v2) * cos($\theta$) y resolver para , donde dot(a, b) es el producto escalar
     // y len(c) es la longitud de c.
     double dotproduct = (v1x * v2x) + (v1y * v2y);
     double v1Length = sqrt(v1x * v1x + v1y * v1y);
@@ -4934,8 +5003,8 @@ double angleBetweenVectors(
     double v2x, double v2y, double v2z) {
 
     // Para determinar el ángulo entre dos vectores v1 y v2, podemos usar
-    // la siguiente fórmula: dot(v1,v2) = len(v1)*len(v2)*cosθ y resolver
-    // para θ donde dot(a,b) es el producto escalar y len(c) es la longitud de c.
+    // la siguiente fórmula: dot(v1,v2) = len(v1)*len(v2)*cos $\theta$ y resolver
+    // para $\theta$ donde dot(a,b) es el producto escalar y len(c) es la longitud de c.
     double dotproduct = (v1x * v2x) + (v1y * v2y) + (v1z * v2z);
     double v1Length = sqrt(v1x * v1x + v1y * v1y + v1z * v1z);
     double v2Length = sqrt(v2x * v2x + v2y * v2y + v2z * v2z);
