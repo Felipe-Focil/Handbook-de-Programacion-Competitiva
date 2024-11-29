@@ -1,23 +1,34 @@
-/*------------------------------------------------------------------------------
-                           File Name                                        
-                           Grafos.cpp                                       
---------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------
                             Description                                      
       En este archivo se encuentra ejemplos de uso de la clase             
+<<<<<<< HEAD
+      Graph para la creacion y uso de grafos
+      Felipe nos dijo que los nombres se anotan de abajo para 
+      arriba, que todo minusculas                              
+=======
       Graph para la creacion y uso de grafos                                
+>>>>>>> 83d133c69b8cfbd2a700acef12ff628bd0f09e72
                                                                             
                                                                             
 --------------------------------------------------------------------------------
                             Files History
 
         Name        Date        Description
+<<<<<<< HEAD
+        illergos    10/26/24    Ortographic correction
+=======
+>>>>>>> 83d133c69b8cfbd2a700acef12ff628bd0f09e72
         ffocilme    10/26/24    Add comments and header information    
         ffocilme    05/10/24    Add topological sort
         ffocilme    05/09/24    Creation
 --------------------------------------------------------------------------------
 */
 #include <bits/stdc++.h>
+<<<<<<< HEAD
+#define FIN ios::ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+=======
 #define FIN ios::ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0)
+>>>>>>> 83d133c69b8cfbd2a700acef12ff628bd0f09e72
 #define endl '\n'
 #define forn(i,a,b) for(int i = int(a); i < int(b);i++)
 #define pb push_back
@@ -61,7 +72,7 @@ public:
             adj[v].push_back(u);
     }
 
-    // Busqueda en Profunidad
+    // Busqueda en Profundidad
     void dfs(int u, vb& visited) {
         cout << u << " ";
         for (auto v : adj[u]) {
@@ -159,7 +170,7 @@ public:
         cout << u << endl;
     }
 
-    // Deteccion de Ciclos
+    //Deteccion de Ciclos
     vi findCycle() {
         vi color(n, 0);
         vi parent(n, -1);
@@ -334,8 +345,8 @@ public:
     }
 };
 
-// Ejemplos de uso:  Puedes remplazarlo por un main
-// Esta dividio en multiples funciones para no generar conflictos de nombres
+// Ejemplos de uso:  Puedes reemplazarlo por un main
+// Esta dividido en multiples funciones para no generar conflictos de nombres
 
 void exmapleComponents() {
     //Construccion del Grafo

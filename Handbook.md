@@ -2,9 +2,9 @@
 
 ## Autor: Felipe Rafael Focil Mendoza
 
-## Version 1.3.2
+## Version 1.3.3
 
-## Fecha 10/05/2024
+## Fecha 06/11/2024
 
 # Respuestas del problema
 
@@ -164,15 +164,15 @@ int main() {
 
 | n               | Possible complexities    |
 | --------------- | -------------------------|
-| n ≤ 10          | O(n!), O(n^7), O(n^6)    |
-| n ≤ 20          | O(2^n * n), O(n^5)       |
-| n ≤ 80          | O(n^4)                    |
-| n ≤ 400         | O(n^3)                    |
-| n ≤ 7500        | O(n^2)                    |
-| n ≤ 7 * 10^4    | O(n√n)                    |
-| n ≤ 5 * 10^5    | O(n log n)                |
-| n ≤ 5 * 10^6    | O(n)                      |
-| n ≤ 10^18       | O(log^2 n), O(log n), O(1)|
+| n <= 10          | O(n!), O(n^7), O(n^6)    |
+| n <= 20          | O(2^n * n), O(n^5)       |
+| n <= 80          | O(n^4)                    |
+| n <= 400         | O(n^3)                    |
+| n <= 7500        | O(n^2)                    |
+| n <= 7 * 10^4    | O(n√n)                    |
+| n <= 5 * 10^5    | O(n log n)                |
+| n <= 5 * 10^6    | O(n)                      |
+| n <= 10^18       | O(log^2 n), O(log n), O(1)|
 
 # End of File
 
@@ -1227,7 +1227,7 @@ int main(){
 ### Busqueda en Profundidad (DFS)
 
 ```cpp
-vb vsisted(n,false);
+vb visited(n,false);
 void dfs(T u, vb& visited) {
     cout << u << " ";
     for (auto &v : adj[u]) {
@@ -1242,7 +1242,7 @@ void dfs(T u, vb& visited) {
 ### Busqueda en Anchura (BFS)
 
 ```cpp
-vb vsisted(n,false);
+vb visited(n,false);
 void bfs(T u, vb& visited) {
     queue<T> q;
     q.push(u);
@@ -1412,30 +1412,36 @@ Un grafo bipartito es un tipo de grafo cuyos vértices pueden dividirse en dos c
 
 ```cpp
 bool isBipartite() {
-    vi side(n, -1);
-    bool ans = true;
-    queue<int> q;
-    forn(i, 0, n) {
-        if (side[i] == -1) {
-            q.push(i);
-            side[i] = 0;
-            while (!q.empty()) {
-                int v = q.front();
-                q.pop();
-                for (int u : adj[v]) {
-                    if (side[u] == -1) {
-                        side[u] = side[v] ^ 1;
-                        q.push(u);
-                    }
-                    else {
-                            ans &= side[u] != side[v];
-                        if (!ans) return ans;
-                    }
-                }
-            }
-        }
-    }
-    return ans;
+ vi side(n, -1);
+ bool ans = true;
+ queue<int> q;
+ forn(i, 0, n)
+ {
+  if (side[i] == -1)
+   {
+     q.push(i);
+     side[i] = 0;
+     while (!q.empty())
+	 {
+       int v = q.front();
+       q.pop();
+       for (int u : adj[v])
+	   {
+         if (side[u] == -1) 
+		 {
+          side[u] = side[v] ^ 1;
+          q.push(u);
+         }
+         else 
+         {
+           ans &= side[u] != side[v];
+           if (!ans) return ans;
+         }
+       }
+     }
+   }
+ }
+return ans;
 }
 ```
 
@@ -2087,55 +2093,43 @@ Un Segment Tree es una estructura de datos que permite hacer consultas eficiente
 template<typename T>
 class SegmentTree {
 public:
-
-    vector<T> data;
-    vector<T> st;
+    using vT = vector<T>;
+    vT data,st;
     int n;
 
-    SegmentTree(vector<T>& a) {
+    SegmentTree(vT &a) {
         n = sz(a);
         data = a;
         st.resize(4 * n);
         build(1, 0, n - 1);
     }
 
-    T query(int l, int r) {
-        return query(1, 0, n - 1, l, r);
-    }
+    T query(int l, int r) { return query(1, 0, n - 1, l, r);}
+    void update(int pos, T val) {update(1, 0, n - 1, pos, val);}
 
-    void update(int pos, T val) {
-        update(1, 0, n - 1, pos, val);
-    }
+    int find(T& val) { return find(1, 0, n - 1, val);}
+    int lower_bound(T& val) { return lower_bound(1, 0, n - 1, val);}
+    int upper_bound(T& val) {return upper_bound(1, 0, n - 1, val);}
 
-    
-    T operation(T& a, T& b) {
-        //Modifica esta funcion de acuerdo el tipo de ST
-        return a+b;
-    }
-
+    // FIX ME : SUM default
+    T operation(T& a, T& b) { return a + b; }
 private:
-
     void build(int v, int l, int r) {
-        if (l == r) {
-            st[v] = data[l];
-            return;
-        }
+        if (l == r) {st[v] =  data[l]; return; }
+
         int m = mid(l, r);
         build(lc(v), l, m);
         build(rc(v), m + 1, r);
-
+        
+        //Fix me (Optional)
         T a = st[lc(v)];
         T b = st[rc(v)];
-
         st[v] = operation(a, b);
     }
 
     T query(int v, int l, int r, int ql, int qr) {
-        if (l > qr || r < ql)
-            return 0;
-
-        if (l >= ql && r <= qr)
-            return st[v];
+        if (l > qr || r < ql) return 0;
+        if (l >= ql && r <= qr) return st[v];
 
         int m = mid(l, r);
         T a = query(lc(v), l, m, ql, qr);
@@ -2148,24 +2142,42 @@ private:
         if (l == r) { st[v] = val; return; }
         int m = mid(l, r);
         if (pos <= m)  update(lc(v), l, m, pos, val);
-        else  update(rc(v), m + 1, r, pos, val);
+        else update(rc(v), m + 1, r, pos, val);
 
+        //Fix me (Optional)
         T a = st[lc(v)];
         T b = st[rc(v)];
-
         st[v] = operation(a, b);
     }
 
     int find(int v, int l, int r, T& val) {
-        if (l == r) {
-            if (st[v] == val) return l;
-            else return -1;
-        }
+        if (l == r) 
+            return ((st[v] == val) ? 1 : -1);
+        
         int m = mid(l, r);
-        int leftIndex = find(lc(v), l, m, val);
+        int i = find(lc(v), l, m, val);
+       
+        return ((i == -1) ? find(rc(v), m+1, r, val) : i);
+    }
 
-        if (leftIndex != -1) return leftIndex;
-        else return find(rc(v), m + 1, r, val);
+    int lower_bound(int v, int l, int r, T& val) {
+        if (l == r) return ((st[v] >= val) ? 1 : -1);
+        
+        int m = mid(l, r);
+        if (st[lc(v)] >= val) 
+            return lower_bound(lc(v), l, m, val);
+        
+        return lower_bound(rc(v), m + 1, r, val);
+    }
+
+    int upper_bound(int v, int l, int r, T& val) {
+        if (l == r) return ((st[v] > val) ? 1 : -1);
+        
+        int m = mid(l, r);
+        if (st[lc(v)] > val)
+            return upper_bound(lc(v), l, m, val);
+        
+        return upper_bound(rc(v), m + 1, r, val);
     }
 
     int lc(int v) { return 2 * v; }
@@ -2174,7 +2186,7 @@ private:
 };
 
 int main(){
-    vector<int> a = { 1, 2, 3, 4, 5 };
+	vi a = { 1, 2, 3, 4, 5 };
     SegmentTree<int> st(a);
 
     cout << st.query(0, 2) << endl;
@@ -2185,6 +2197,10 @@ int main(){
 
     st.update(0, 100);
     cout << st.query(0, 4) << endl;
+    
+    cout << "Find: " << st.find(5) << endl;
+    cout << "Lower Bound: " << st.lower_bound(22) << endl;
+    cout << "Upper Bound: " << st.upper_bound(3) << endl;
 }
 ```
 
@@ -2902,12 +2918,17 @@ private:
 
 # Permutaciones
 
-3. **Permutaciones**:
+Las permutaciones representan el número de formas en que se pueden ordenar \( k \) elementos de un conjunto de \( n \) elementos,  
+- **Fórmula de permutaciones sin repetición**: 
+  $$
+  P(n, k) = \frac{n!}{(n-k)!}
+  $$
+- **Fórmula de permutaciones con repetición**: 
+  $$
+  P(n_1, n_2, \ldots, n_k) = \frac{n!}{n_1! \cdot n_2! \cdot \ldots \cdot n_k!}
+  $$
 
-Las permutaciones representan el número de formas en que se pueden ordenar \( k \) elementos de un conjunto de \( n \) elementos, teniendo en cuenta el orden.
 
-- Fórmula de permutaciones sin repetición: \( P(n, k) = \frac{{n!}}{{(n-k)!}} \)
-- Fórmula de permutaciones con repetición: \( P(n_1, n_2, \ldots, n_k) = \frac{{n!}}{{n_1! \cdot n_2! \cdot \ldots \cdot n_k!}} \), donde \( n_1, n_2, \ldots, n_k \) son el número de elementos idénticos en cada categoría.
 
 ```cpp
 unsigned long long factorial(int n) {
@@ -2939,9 +2960,10 @@ vector<vector<int>> getPermutations(const vector<int>& nums) {
 
 # Combinaciones
 
-Las combinaciones representan el número de formas en que se pueden seleccionar \( k \) elementos de un conjunto de \( n \) elementos, sin tener en cuenta el orden.
+Las combinaciones representan el número de formas en que se pueden seleccionar 
+$k$ elementos de un conjunto de $n$ elementos, sin tener en cuenta el orden.
 
-- Fórmula: \( C(n, k) = \binom{n}{k} = \frac{{n!}}{{k!(n-k)!}} \), donde \( n! \) representa el factorial de \( n \).
+- Fórmula: $C(n, k) = \binom{n}{k} = \frac{{n!}}{{k!(n-k)!}}$, donde $n!$ representa el factorial de $n$.
 
 ```cpp
 unsigned long long calcularCombinaciones(int n, int k) {
@@ -3531,198 +3553,190 @@ string findLCS(const string& X, const string& Y) {
 Un Fenwick Tree (también conocido como Binary Indexed Tree o BIT) es una estructura de datos que se utiliza para realizar consultas y actualizaciones eficientes en una secuencia de valores numéricos, como sumas acumulativas.
 
 ```cpp
+template<typename T>
 class FenwickTree {
-private:
-    std::vector<int> tree;
-    int size;
-
 public:
-    FenwickTree(int n) {
-        size = n;
-        tree.assign(n + 1, 0);
+    using vT = vector<T>;
+
+    vT bit;
+    int n;
+    FenwickTree(int s) {
+        n = s;
+        bit.assign(s, 0);
     }
 
-    // Añade 'delta' al elemento en la posición 'index'
-    void update(int index, int delta) {
-        index++; // Aumentar en 1 porque BIT es 1-indexado
-        while (index <= size) {
-            tree[index] += delta;
-            index += index & -index; // Avanzar al siguiente elemento en el árbol
+    FenwickTree(vector<int> const& a) : FenwickTree(a.size()) {
+        forn(i, 0, n) {
+            bit[i] += a[i];
+            int r = i | (i + 1);
+            if (r < n) bit[r] += bit[i];
         }
     }
 
-    // Devuelve la suma acumulativa de los primeros 'index' elementos
-    int query(int index) {
-        index++; // Aumentar en 1 porque BIT es 1-indexado
-        int result = 0;
-        while (index > 0) {
-            result += tree[index];
-            index -= index & -index; // Retroceder al elemento anterior en el árbol
-        }
-        return result;
+    int sum(int r) {
+        int ret = 0;
+        for (; r >= 0; r = (r & (r + 1)) - 1)
+            ret += bit[r];
+        return ret;
+    }
+
+    int sum(int l, int r) { return sum(r) - sum(l - 1); }
+
+    void add(int i, int k) {
+        for (; i < n; i = i | (i + 1))
+            bit[i] += k;
     }
 };
 
-int main() {
-    std::vector<int> arr = {1, 2, 3, 4, 5, 6, 7};
-    int n = arr.size();
+int main(){
+	FenwickTree<int> ft(5);
+	
+	ft.add(0,5);
+	ft.add(1,3);
+	ft.add(1,2);
 
-    FenwickTree fenwick(n);
+	cout<<ft.sum(0,2)<<endl;
+}
+```
 
-    // Construir el Fenwick Tree
-    for (int i = 0; i < n; i++) {
-        fenwick.update(i, arr[i]);
+## Minimun Fenwick Tree
+```cpp
+template<typename T>
+class FenwickTreeMin {
+public:
+    using vT = vector<T>;
+    vT bit;
+    int n;
+    const int INF = 1e9;
+    FenwickTreeMin(int s) n(s) {
+        n = s;
+        bit.assign(n, INF);
+    }
+    FenwickTreeMin(vT a) : FenwickTreeMin(sz(a)) {
+        forn(i, 0, n) update(i, a[i]);
     }
 
-    // Consultar la suma acumulativa de los primeros k elementos
-    int k = 4;
-    int sum = fenwick.query(k);
-    std::cout << "La suma acumulativa de los primeros " << k << " elementos es: " << sum << std::endl;
+    int getmin(int r) {
+        int ret = INF;
+        for (; r >= 0; r = (r & (r + 1)) - 1)
+            ret = min(ret, bit[r]);
+        return ret;
+    }
 
-    // Actualizar el valor en la posición 2 a 10
-    fenwick.update(2, 10);
+    void update(int i, int k) {
+        for (; i < n; i = i | (i + 1))
+            bit[i] = min(bit[i], k);
+    }
+};
 
-    // Consultar la suma acumulativa de los primeros k elementos después de la actualización
-    int newSum = fenwick.query(k);
-    std::cout << "La suma acumulativa de los primeros " << k << " elementos después de la actualización es: " << newSum << std::endl;
+int main(){
+	vi v = {1,2,3,0,-1,10,5};
+	FenwickTreeMin<int> ft(v);
+	
+	ft.getmin(5);
+	ft.add(4,-10);
+	ft.getmin(5);
 
-    return 0;
+	cout<<ft.sum(0,2)<<endl;
+}
+```
+
+### Fenwick Tree for matrix
+
+```cpp
+template<typename T>
+class FenwickTree2D {
+    using vT = vector<T>;
+    using vvT = vector<vT>;
+    vvT bit;
+    int n, m;
+public:
+    FenwickTree2D(int rows, int cols) : n(rows), m(cols) {
+        bit.assign(n, vT(m, 0));
+    }
+    FenwickTree2D(const vvT& matrix) : FenwickTree2D(matrix.size(), matrix[0].size()) {
+        for (int i = 0; i < n; ++i)
+            for (int j = 0; j < m; ++j)
+                add(i, j, matrix[i][j]);
+    }
+
+    int sum(int x, int y) {
+        int ret = 0;
+        for (int i = x; i >= 0; i = (i & (i + 1)) - 1)
+            for (int j = y; j >= 0; j = (j & (j + 1)) - 1)
+                ret += bit[i][j];
+        return ret;
+    }
+
+    int sum(int x1, int y1, int x2, int y2) {
+        return sum(x2, y2) - sum(x1 - 1, y2) - sum(x2, y1 - 1) + sum(x1 - 1, y1 - 1);
+    }
+
+    void add(int x, int y, int delta) {
+        for (int i = x; i < n; i = i | (i + 1))
+            for (int j = y; j < m; j = j | (j + 1))
+                bit[i][j] += delta;
+    }
+};
+
+int main(){
+	FenwickTree2D<int> ft(4,4);
+	ft.add(1,1,5);
+	ft.add(2,3,5);
+
+	cout<<ft.sum(0,2)<<endl;
 }
 ```
 
 ## Spanning Tree
 
-Un Sparse Table es una estructura de datos que permite realizar consultas eficientes en un rango de valores en un arreglo, especialmente para operaciones idempotentes como mínimo, máximo, suma, etc.
-
-| Método                | Descripción                                                  |
-|-----------------------|--------------------------------------------------------------|
-| `SparseTable(values, op)` | Constructor que inicializa la tabla con un arreglo y una operación. |
-| `query(l, r)`         | Realiza una consulta en el rango [l, r] según la operación especificada. |
-| `gcd(a, b)`           | Función auxiliar para calcular el máximo común divisor.    |
-| `sumQuery(l, r)`      | Realiza una consulta de suma en el rango [l, r].             |
-| `multQuery(l, r)`     | Realiza una consulta de multiplicación en el rango [l, r].  |
-| `calcLog2(len)`       | Calcula el logaritmo base 2 de un número entero `len`.      |
-
 ```cpp
+template <typename T>
 class SparseTable {
+	using vT = vector<T>;
+	using vvT = vector<vT>;
 public:
-    enum Operation {
-        MIN,
-        MAX,
-        SUM,
-        MULT,
-        GCD
-    };
 
-    SparseTable(vector<long>& values, Operation op) : op(op) {
-        init(values);
+    vvT st; // Sparse Table
+    vi lgt; // LoG Table 
+	
+    //Fix me
+	T f(const T &x, const T &y){
+		return min(x,y);
+	}
+
+    SparseTable(const vT& data) { build(data); }
+
+    T query(int l, int r) {
+        int i = lgt[r - l + 1];
+		int j = r - (1 << i) + 1;
+        return f(st[l][i], st[j][i]);
     }
 
-    long query(int l, int r) {
-        if (op == Operation::MIN) {
-            return query(l, r, [](long a, long b) { return min(a, b); });
-        } else if (op == Operation::MAX) {
-            return query(l, r, [](long a, long b) { return max(a, b); });
-        } else if (op == Operation::GCD) {
-            return query(l, r, [this](long a, long b) { return gcd(a, b); });
-        }
 
-        if (op == Operation::SUM) {
-            return sumQuery(l, r);
-        } else {
-            return multQuery(l, r);
-        }
-    }
+    void build(const vT& data) {
+        int n = sz(data);
+		int mxl = log2(n) + 1; // MaX Log
+        st.assign(n, vT(mxl));
+        lgt.assign(n + 1, 0);
 
-private:
-    int n;
-    int P;
-    vector<vector<long>> dp;
-    vector<vector<int>> it;
-    Operation op;
+        forn(i,2,n+1) lgt[i] = lgt[i / 2] + 1;
+        forn(i,0,n) st[i][0] = data[i];
 
-    void init(vector<long>& v) {
-        n = v.size();
-        P = static_cast<int>(log2(n));
-        dp = vector<vector<long>>(P + 1, vector<long>(n));
-        it = vector<vector<int>>(P + 1, vector<int>(n));
-
-        for (int i = 0; i < n; i++) {
-            dp[0][i] = v[i];
-            it[0][i] = i;
-        }
-
-        for (int i = 1; i <= P; i++) {
-            for (int j = 0; j + (1 << i) <= n; j++) {
-                long leftInterval = dp[i - 1][j];
-                long rightInterval = dp[i - 1][j + (1 << (i - 1))];
-                if (op == Operation::MIN) {
-                    dp[i][j] = min(leftInterval, rightInterval);
-                    if (leftInterval <= rightInterval) {
-                        it[i][j] = it[i - 1][j];
-                    } else {
-                        it[i][j] = it[i - 1][j + (1 << (i - 1))];
-                    }
-                } else if (op == Operation::MAX) {
-                    dp[i][j] = max(leftInterval, rightInterval);
-                    if (leftInterval >= rightInterval) {
-                        it[i][j] = it[i - 1][j];
-                    } else {
-                        it[i][j] = it[i - 1][j + (1 << (i - 1))];
-                    }
-                } else if (op == Operation::SUM) {
-                    dp[i][j] = leftInterval + rightInterval;
-                } else if (op == Operation::MULT) {
-                    dp[i][j] = leftInterval * rightInterval;
-                } else if (op == Operation::GCD) {
-                    dp[i][j] = gcd(leftInterval, rightInterval);
-                }
+        for (int j = 1; (1 << j) <= n; ++j) {
+            for (int i = 0; i + (1 << j) <= n; ++i) {
+				int k = i + (1 << (j - 1) );
+                st[i][j] = f(st[i][j-1], st[k][j-1]);
             }
         }
-    }
-
-    long gcd(long a, long b) {
-        while (b != 0) {
-            long temp = b;
-            b = a % b;
-            a = temp;
-        }
-        return abs(a);
-    }
-
-    long sumQuery(int l, int r) {
-        long sum = 0;
-        for (int p = calcLog2(r - l + 1); l <= r; p = calcLog2(r - l + 1)) {
-            sum += dp[p][l];
-            l += (1 << p);
-        }
-        return sum;
-    }
-
-    long multQuery(int l, int r) {
-        long result = 1;
-        for (int p = calcLog2(r - l + 1); l <= r; p = calcLog2(r - l + 1)) {
-            result *= dp[p][l];
-            l += (1 << p);
-        }
-        return result;
-    }
-
-    long query(int l, int r, function<long(long, long)> fn) {
-        int len = r - l + 1;
-        int p = calcLog2(len);
-        return fn(dp[p][l], dp[p][r - (1 << p) + 1]);
-    }
-
-    int calcLog2(int len) {
-        return static_cast<int>(log2(len));
     }
 };
 
 int main() {
-    vector<long> values = {4, 4, 4, 4, 4, 4};
-    SparseTable sparseTable(values, SparseTable::Operation::SUM);
-    cout << sparseTable.query(0, values.size() - 1) << endl;
+    vi data = {1, 3, -1, 8, 5, 6};
+    SparseTable<int> st(data);
+
+    cout << "Min from index 1 to 4: " << st.query(1, 4) << endl;
     return 0;
 }
 ```
@@ -3730,43 +3744,63 @@ int main() {
 # Knapsack
 
 ```cpp
-struct Item {
-    int weight;
-    int value;
-};
+template <typename T>
+class Knapsack{
+	using vT = vector<T>;
+	using vvT = vector<vT>;
+public:
+    T mxW;
+    vT ws,v,used;
+    vvT dp;
+    
+	Knapsack(T mxW, const vT& ws, const vT& v)
+        : mxW(mxW), ws(ws), v(v) {}
 
-// Función para resolver el problema de la mochila
-int knapsack(vector<Item>& items, int capacity) {
-    int n = items.size();
-    vector<vector<int>> dp(n + 1, vector<int>(capacity + 1, 0));
+    T build() {
+        int n = sz(ws);
+        dp = vvT(n + 1, vT(mxW + 1, 0));
 
-    for (int i = 1; i <= n; i++) {
-        for (int w = 0; w <= capacity; w++) {
-            if (items[i - 1].weight <= w) {
-                dp[i][w] = max(dp[i - 1][w], dp[i - 1][w - items[i - 1].weight] + items[i - 1].value);
-            } else {
-                dp[i][w] = dp[i - 1][w];
+        forn (i,1,n+1) {
+            for (T w = 0; w <= mxW; w++) {
+                if (ws[i - 1] <= w)
+                    dp[i][w] = max(
+					dp[i-1][w], v[i-1] + 
+					dp[i-1][w - ws[i-1]]
+					);
+                else dp[i][w] = dp[i - 1][w];
             }
         }
+        rebuild();
+        return dp[n][mxW];
     }
 
-    return dp[n][capacity];
-}
+    void rebuild() {
+        used.clear();
+        T w = mxW;
+        for (int i = sz(ws); i > 0; i--) {
+            if (dp[i][w] != dp[i - 1][w]) {
+                used.pb(i - 1);
+                w -= ws[i - 1];
+            }
+        }
+        reverse(all(used));
+    }
+};
 
-int main() {
-    int capacity = 10; // Capacidad de la mochila
-    vector<Item> items = {
-        {2, 6},
-        {2, 10},
-        {3, 12},
-        {4, 13},
-        {5, 15}
-    };
+// Ejemplo de uso
+int main(){
+	int maxWeight = 50;
+    vi weights = {10, 20, 30};
+    vi values = {60, 100, 120};
 
-    int max_value = knapsack(items, capacity);
-    cout << "El valor máximo que se puede obtener es: " << max_value << endl;
+    Knapsack<int> dp(maxWeight, weights, values);
+    int maxValue = dp.build();
 
-    return 0;
+	cout<<maxValue<<endl;
+	//Selected values for getting max value
+	vi used = dp.used;
+    for (int item : used)
+        cout << item << " ";
 }
 ```
 
@@ -4296,72 +4330,135 @@ Matrix matrixPower(const Matrix &matrix, int n) {
 
 # Matemáticas
 
-# Probabliidad
+
+
+## Uso Angulos
+
+# Matemáticas
+
+# Matemáticas
+
+## Probabilidad
 
 1. **Probabilidad**:
 
-- La probabilidad de un evento \( A \), denotada como \( P(A) \), se define como el número de resultados favorables al evento dividido por el número total de resultados posibles.
-  - Fórmula: \( P(A) = \frac{{\text{{Número de resultados favorables}}}}{{\text{{Número total de resultados posibles}}}} \)
+   - La probabilidad de un evento $A$, denotada como $P(A)$, se define como el número de resultados favorables al evento dividido por el número total de resultados posibles.
+     - Fórmula: $P(A) = \frac{\text{Número de resultados favorables}}{\text{Número total de resultados posibles}}$
 
-1. **Probabilidad Total**:
-   - Para eventos \( A_1, A_2, \ldots, A_n \) que forman una partición del espacio muestral, la probabilidad de un evento \( B \) se puede calcular como:
-     \[ P(B) = \sum_{i=1}^{n} P(A_i) \cdot P(B|A_i) \]
+2. **Probabilidad Total**:
+   - Para eventos $A_1, A_2, \ldots, A_n$ que forman una partición del espacio muestral, la probabilidad de un evento $B$ se puede calcular como: $P(B) = \sum_{i=1}^{n} P(A_i) \cdot P(B|A_i)$
 
-2. **Teorema de Bayes**:
-   - Permite calcular la probabilidad condicional inversa. Para dos eventos \( A \) y \( B \) con \( P(B) > 0 \), se puede calcular la probabilidad de \( A \) dado \( B \) como:
-     \[ P(A|B) = \frac{{P(B|A) \cdot P(A)}}{{P(B)}} \]
+3. **Teorema de Bayes**:
+   - Permite calcular la probabilidad condicional inversa. Para dos eventos $A$ y $B$ con $P(B) > 0$, se puede calcular la probabilidad de $A$ dado $B$ como: $P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}$
 
-3. **Regla del Producto**:
-   - La probabilidad de la intersección de dos eventos \( A \) y \( B \) se puede calcular como el producto de la probabilidad de \( A \) dado \( B \) y la probabilidad de \( B \) como:
-     \[ P(A \cap B) = P(A|B) \cdot P(B) \]
+4. **Regla del Producto**:
+   - La probabilidad de la intersección de dos eventos $A$ y $B$ se puede calcular como el producto de la probabilidad de $A$ dado $B$ y la probabilidad de $B$ como: $P(A \cap B) = P(A|B) \cdot P(B)$
 
-4. **Probabilidad Conjunta**:
-   - La probabilidad de que dos eventos \( A \) y \( B \) ocurran simultáneamente se puede denotar como \( P(A \cap B) \).
+5. **Probabilidad Conjunta**:
+   - La probabilidad de que dos eventos $A$ y $B$ ocurran simultáneamente se puede denotar como $P(A \cap B)$.
 
-5. **Independencia de Eventos**:
-   - Dos eventos \( A \) y \( B \) son independientes si y solo si la probabilidad de que ocurra \( A \) dado \( B \) es igual a la probabilidad de \( A \), y viceversa:
-     \[ P(A|B) = P(A) \text{ y } P(B|A) = P(B) \]
+6. **Independencia de Eventos**:
+   - Dos eventos $A$ y $B$ son independientes si y solo si la probabilidad de que ocurra $A$ dado $B$ es igual a la probabilidad de $A$, y viceversa: $P(A|B) = P(A)$ y $P(B|A) = P(B)$
 
-6. **Probabilidad Condicional**:
-   - La probabilidad de que ocurra un evento \( A \) dado que ya ha ocurrido un evento \( B \) se denota como \( P(A|B) \).
+7. **Probabilidad Condicional**:
+   - La probabilidad de que ocurra un evento $A$ dado que ya ha ocurrido un evento $B$ se denota como $P(A|B)$.
 
-7. **Regla de la Suma**:
-   - La probabilidad de la unión de dos eventos \( A \) y \( B \) se puede calcular como la suma de las probabilidades de cada evento menos la probabilidad de su intersección:
-     \[ P(A \cup B) = P(A) + P(B) - P(A \cap B) \]
+8. **Regla de la Suma**:
+   - La probabilidad de la unión de dos eventos $A$ y $B$ se puede calcular como la suma de las probabilidades de cada evento menos la probabilidad de su intersección: $P(A \cup B) = P(A) + P(B) - P(A \cap B)$
 
 ## Sucesiones
 
 1. **Números de Fibonacci**: Esta sucesión comienza con 0 y 1, y cada término posterior es la suma de los dos términos anteriores.
-   - Fórmula: \( F(n) = F(n-1) + F(n-2) \) con \( F(0) = 0 \) y \( F(1) = 1 \).
+   - Fórmula: $F(n) = F(n-1) + F(n-2)$ con $F(0) = 0$ y $F(1) = 1$.
 
 2. **Números de Catalan**: Estos números surgen en diversos problemas de combinatoria y se definen de la siguiente manera:
-   - Fórmula: \( C(n) = \frac{{(2n)!}}{{(n+1)!n!}} \) con \( C(0) = 1 \).
+   - Fórmula: $C(n) = \frac{(2n)!}{(n+1)!n!}$ con $C(0) = 1$.
 
 3. **Números Triangulares**: La secuencia de números triangulares se forma al sumar los números naturales consecutivos.
-   - Fórmula: \( T(n) = \frac{{n(n+1)}}{2} \) con \( T(1) = 1 \).
+   - Fórmula: $T(n) = \frac{n(n+1)}{2}$ con $T(1) = 1$.
 
 4. **Números Cuadrados**: Esta sucesión representa los cuadrados de los números naturales.
-   - Fórmula: \( S(n) = n^2 \) con \( S(1) = 1 \).
+   - Fórmula: $S(n) = n^2$ con $S(1) = 1$.
 
 5. **Números Primos**: La secuencia de números primos son aquellos que solo son divisibles por 1 y por sí mismos.
    - No hay una fórmula cerrada general para los números primos.
 
 6. **Números Triangulares Centrales**: Estos números surgen en la geometría de los polígonos y se relacionan con los números triangulares.
-   - Fórmula: \( TC(n) = \frac{{n(n+1)(2n+1)}}{6} \) con \( TC(1) = 1 \).
+   - Fórmula: $TC(n) = \frac{n(n+1)(2n+1)}{6}$ con $TC(1) = 1$.
 
 7. **Números de Lucas**: Similar a la sucesión de Fibonacci pero con diferentes valores iniciales.
-   - Fórmula: \( L(n) = L(n-1) + L(n-2) \) con \( L(0) = 2 \) y \( L(1) = 1 \).
+   - Fórmula: $L(n) = L(n-1) + L(n-2)$ con $L(0) = 2$ y $L(1) = 1$.
 
 8. **Números de Pell**: Otra secuencia similar a Fibonacci, pero con diferentes valores iniciales.
-   - Fórmula: \( P(n) = 2P(n-1) + P(n-2) \) con \( P(0) = 0 \) y \( P(1) = 1 \).
+   - Fórmula: $P(n) = 2P(n-1) + P(n-2)$ con $P(0) = 0$ y $P(1) = 1$.
 
 9. **Números de Mersenne**: Estos son números enteros que son una unidad menos que una potencia de dos.
-    - Fórmula: \( M_n = 2^n - 1 \) donde \( n \) es un número primo.
+    - Fórmula: $M_n = 2^n - 1$ donde $n$ es un número primo.
 
-11. **Números de Stirling de Segundo Tipo**: Estos números cuentan el número de formas distintas de dividir un conjunto de \( n \) elementos en \( k \) conjuntos no vacíos.
+10. **Números de Stirling de Segundo Tipo**: Estos números cuentan el número de formas distintas de dividir un conjunto de $n$ elementos en $k$ conjuntos no vacíos.
+    - Fórmula: Los números de Stirling de Segundo Tipo tienen una fórmula recursiva.
+# Matemáticas
+
+## Probabilidad
+
+1. **Probabilidad**:
+
+   - La probabilidad de un evento $A$, denotada como $P(A)$, se define como el número de resultados favorables al evento dividido por el número total de resultados posibles.
+     - Fórmula: $P(A) = \frac{\text{Número de resultados favorables}}{\text{Número total de resultados posibles}}$
+
+2. **Probabilidad Total**:
+   - Para eventos $A_1, A_2, \ldots, A_n$ que forman una partición del espacio muestral, la probabilidad de un evento $B$ se puede calcular como: $P(B) = \sum_{i=1}^{n} P(A_i) \cdot P(B|A_i)$
+
+3. **Teorema de Bayes**:
+   - Permite calcular la probabilidad condicional inversa. Para dos eventos $A$ y $B$ con $P(B) > 0$, se puede calcular la probabilidad de $A$ dado $B$ como: $P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}$
+
+4. **Regla del Producto**:
+   - La probabilidad de la intersección de dos eventos $A$ y $B$ se puede calcular como el producto de la probabilidad de $A$ dado $B$ y la probabilidad de $B$ como: $P(A \cap B) = P(A|B) \cdot P(B)$
+
+5. **Probabilidad Conjunta**:
+   - La probabilidad de que dos eventos $A$ y $B$ ocurran simultáneamente se puede denotar como $P(A \cap B)$.
+
+6. **Independencia de Eventos**:
+   - Dos eventos $A$ y $B$ son independientes si y solo si la probabilidad de que ocurra $A$ dado $B$ es igual a la probabilidad de $A$, y viceversa: $P(A|B) = P(A)$ y $P(B|A) = P(B)$
+
+7. **Probabilidad Condicional**:
+   - La probabilidad de que ocurra un evento $A$ dado que ya ha ocurrido un evento $B$ se denota como $P(A|B)$.
+
+8. **Regla de la Suma**:
+   - La probabilidad de la unión de dos eventos $A$ y $B$ se puede calcular como la suma de las probabilidades de cada evento menos la probabilidad de su intersección: $P(A \cup B) = P(A) + P(B) - P(A \cap B)$
+
+## Sucesiones
+
+1. **Números de Fibonacci**: Esta sucesión comienza con 0 y 1, y cada término posterior es la suma de los dos términos anteriores.
+   - Fórmula: $F(n) = F(n-1) + F(n-2)$ con $F(0) = 0$ y $F(1) = 1$.
+
+2. **Números de Catalan**: Estos números surgen en diversos problemas de combinatoria y se definen de la siguiente manera:
+   - Fórmula: $C(n) = \frac{(2n)!}{(n+1)!n!}$ con $C(0) = 1$.
+
+3. **Números Triangulares**: La secuencia de números triangulares se forma al sumar los números naturales consecutivos.
+   - Fórmula: $T(n) = \frac{n(n+1)}{2}$ con $T(1) = 1$.
+
+4. **Números Cuadrados**: Esta sucesión representa los cuadrados de los números naturales.
+   - Fórmula: $S(n) = n^2$ con $S(1) = 1$.
+
+5. **Números Primos**: La secuencia de números primos son aquellos que solo son divisibles por 1 y por sí mismos.
+   - No hay una fórmula cerrada general para los números primos.
+
+6. **Números Triangulares Centrales**: Estos números surgen en la geometría de los polígonos y se relacionan con los números triangulares.
+   - Fórmula: $TC(n) = \frac{n(n+1)(2n+1)}{6}$ con $TC(1) = 1$.
+
+7. **Números de Lucas**: Similar a la sucesión de Fibonacci pero con diferentes valores iniciales.
+   - Fórmula: $L(n) = L(n-1) + L(n-2)$ con $L(0) = 2$ y $L(1) = 1$.
+
+8. **Números de Pell**: Otra secuencia similar a Fibonacci, pero con diferentes valores iniciales.
+   - Fórmula: $P(n) = 2P(n-1) + P(n-2)$ con $P(0) = 0$ y $P(1) = 1$.
+
+9. **Números de Mersenne**: Estos son números enteros que son una unidad menos que una potencia de dos.
+    - Fórmula: $M_n = 2^n - 1$ donde $n$ es un número primo.
+
+10. **Números de Stirling de Segundo Tipo**: Estos números cuentan el número de formas distintas de dividir un conjunto de $n$ elementos en $k$ conjuntos no vacíos.
     - Fórmula: Los números de Stirling de Segundo Tipo tienen una fórmula recursiva.
 
-## Uso Angulos
 
 ```cpp
 #include <iostream>
@@ -4887,7 +4984,7 @@ double gradosARadianes(double grados) {
 //2D
 double angleBetweenVectors(double v1x, double v1y, double v2x, double v2y) {
     // Para determinar el ángulo entre dos vectores v1 y v2, podemos usar la siguiente fórmula:
-    // dot(v1, v2) = len(v1) * len(v2) * cos(θ) y resolver para θ, donde dot(a, b) es el producto escalar
+    // dot(v1, v2) = len(v1) * len(v2) * cos($\theta$) y resolver para , donde dot(a, b) es el producto escalar
     // y len(c) es la longitud de c.
     double dotproduct = (v1x * v2x) + (v1y * v2y);
     double v1Length = sqrt(v1x * v1x + v1y * v1y);
@@ -4906,8 +5003,8 @@ double angleBetweenVectors(
     double v2x, double v2y, double v2z) {
 
     // Para determinar el ángulo entre dos vectores v1 y v2, podemos usar
-    // la siguiente fórmula: dot(v1,v2) = len(v1)*len(v2)*cosθ y resolver
-    // para θ donde dot(a,b) es el producto escalar y len(c) es la longitud de c.
+    // la siguiente fórmula: dot(v1,v2) = len(v1)*len(v2)*cos $\theta$ y resolver
+    // para $\theta$ donde dot(a,b) es el producto escalar y len(c) es la longitud de c.
     double dotproduct = (v1x * v2x) + (v1y * v2y) + (v1z * v2z);
     double v1Length = sqrt(v1x * v1x + v1y * v1y + v1z * v1z);
     double v2Length = sqrt(v2x * v2x + v2y * v2y + v2z * v2z);

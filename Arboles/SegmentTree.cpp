@@ -1,3 +1,22 @@
+/*------------------------------------------------------------------------------
+                           File Name                                        
+                           SegmentTree.cpp                                       
+--------------------------------------------------------------------------------
+                            Description                                      
+      En este archivo se encuentra ejemplos de uso de la clase             
+      SegmentTree para la creacion y uso de arbol de segmentos                             
+                                                                            
+                                                                            
+--------------------------------------------------------------------------------
+                            Files History
+
+        Name        Date        Description
+        ffocilme    11/01/24    Refactoring code for legibility    
+        ffocilme    05/09/24    Creation
+--------------------------------------------------------------------------------
+*/
+
+
 #include <bits/stdc++.h>
 
 #define FIN ios::ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0)
@@ -28,65 +47,43 @@ using u64 = uint64_t;
 template<typename T>
 class SegmentTree {
 public:
-
-    vector<T> data;
-    vector<T> st;
+    using vT = vector<T>;
+    vT data,st;
     int n;
 
-    SegmentTree(vector<T>& a) {
+    SegmentTree(vT &a) {
         n = sz(a);
         data = a;
         st.resize(4 * n);
         build(1, 0, n - 1);
     }
 
-    T query(int l, int r) {
-        return query(1, 0, n - 1, l, r);
-    }
+    T query(int l, int r) { return query(1, 0, n - 1, l, r);}
+    void update(int pos, T val) {update(1, 0, n - 1, pos, val);}
 
-    void update(int pos, T val) {
-        update(1, 0, n - 1, pos, val);
-    }
+    int find(T& val) { return find(1, 0, n - 1, val);}
+    int lower_bound(T& val) { return lower_bound(1, 0, n - 1, val);}
+    int upper_bound(T& val) {return upper_bound(1, 0, n - 1, val);}
 
-    T operation(T& a, T& b) {
-        return a + b;
-    }
-
-    int find(T& val) {
-        return find(1, 0, n - 1, val);
-    }
-
-    int lower_bound(T& val) {
-        return lower_bound(1, 0, n - 1, val);
-    }
-
-    int upper_bound(T& val) {
-        return upper_bound(1, 0, n - 1, val);
-    }
-
+    // FIX ME : SUM default
+    T operation(T& a, T& b) { return a + b; }
 private:
-
     void build(int v, int l, int r) {
-        if (l == r) {
-            st[v] = data[l];
-            return;
-        }
+        if (l == r) {st[v] =  data[l]; return; }
+
         int m = mid(l, r);
         build(lc(v), l, m);
         build(rc(v), m + 1, r);
-
+        
+        //Fix me (Optional)
         T a = st[lc(v)];
         T b = st[rc(v)];
-
         st[v] = operation(a, b);
     }
 
     T query(int v, int l, int r, int ql, int qr) {
-        if (l > qr || r < ql)
-            return 0;
-
-        if (l >= ql && r <= qr)
-            return st[v];
+        if (l > qr || r < ql) return 0;
+        if (l >= ql && r <= qr) return st[v];
 
         int m = mid(l, r);
         T a = query(lc(v), l, m, ql, qr);
@@ -99,48 +96,42 @@ private:
         if (l == r) { st[v] = val; return; }
         int m = mid(l, r);
         if (pos <= m)  update(lc(v), l, m, pos, val);
-        else  update(rc(v), m + 1, r, pos, val);
+        else update(rc(v), m + 1, r, pos, val);
 
+        //Fix me (Optional)
         T a = st[lc(v)];
         T b = st[rc(v)];
-
         st[v] = operation(a, b);
     }
 
     int find(int v, int l, int r, T& val) {
-        if (l == r) {
-            if (st[v] == val) return l;
-            else return -1;
-        }
+        if (l == r) 
+            return ((st[v] == val) ? 1 : -1);
+        
         int m = mid(l, r);
-        int leftIndex = find(lc(v), l, m, val);
-
-        if (leftIndex != -1) return leftIndex;
-        else return find(rc(v), m + 1, r, val);
+        int i = find(lc(v), l, m, val);
+       
+        return ((i == -1) ? find(rc(v), m+1, r, val) : i);
     }
 
     int lower_bound(int v, int l, int r, T& val) {
-        if (l == r) {
-            if (st[v] >= val) return l;
-            else return -1;
-        }
+        if (l == r) return ((st[v] >= val) ? 1 : -1);
+        
         int m = mid(l, r);
-        if (st[lc(v)] >= val)
+        if (st[lc(v)] >= val) 
             return lower_bound(lc(v), l, m, val);
-        else
-            return lower_bound(rc(v), m + 1, r, val);
+        
+        return lower_bound(rc(v), m + 1, r, val);
     }
 
     int upper_bound(int v, int l, int r, T& val) {
-        if (l == r) {
-            if (st[v] > val) return l;
-            else return -1;
-        }
+        if (l == r) return ((st[v] > val) ? 1 : -1);
+        
         int m = mid(l, r);
         if (st[lc(v)] > val)
             return upper_bound(lc(v), l, m, val);
-        else
-            return upper_bound(rc(v), m + 1, r, val);
+        
+        return upper_bound(rc(v), m + 1, r, val);
     }
 
     int lc(int v) { return 2 * v; }
@@ -149,7 +140,7 @@ private:
 };
 
 void example() {
-    vector<int> a = { 1, 2, 3, 4, 5 };
+    vi a = { 1, 2, 3, 4, 5 };
     SegmentTree<int> st(a);
 
     cout << st.query(0, 2) << endl;
