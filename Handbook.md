@@ -1,10 +1,158 @@
-# Competitive Programming Handbook
+# Competitive Programming Handbook <!-- omit in toc -->
 
-## Autor: Felipe Rafael Focil Mendoza
+## Autor: Felipe Rafael Focil Mendoza <!-- omit in toc -->
 
-## Version 1.3.2
+## Version 1.3.2 <!-- omit in toc -->
 
-## Fecha 10/05/2024
+## Fecha 10/05/2024 <!-- omit in toc -->
+
+# Índice <!-- omit in toc -->
+- [Respuestas del problema](#respuestas-del-problema)
+    - [Compilation Error (CE)](#compilation-error-ce)
+    - [Run Time Error (RTE)](#run-time-error-rte)
+    - [Time Limit Exceeded (TLE)](#time-limit-exceeded-tle)
+    - [Memory Limit Exceeded (MLE)](#memory-limit-exceeded-mle)
+    - [Wrong Answer (WA)](#wrong-answer-wa)
+    - [Output Limit Exceeded (OLE)](#output-limit-exceeded-ole)
+    - [Presentation Error](#presentation-error)
+    - [Accepted (AC)](#accepted-ac)
+- [Comandos de Compilación desde Terminal](#comandos-de-compilación-desde-terminal)
+  - [Linux](#linux)
+  - [Windows](#windows)
+  - [Mac OS X](#mac-os-x)
+- [Plantilla de código inicial](#plantilla-de-código-inicial)
+- [Tamaños de variable](#tamaños-de-variable)
+- [Tiempo de Complejidad](#tiempo-de-complejidad)
+- [End of File](#end-of-file)
+- [Precision de decimales](#precision-de-decimales)
+- [Exponenciación Binaria](#exponenciación-binaria)
+- [Aritmética Modular](#aritmética-modular)
+  - [Operaciones mediante Aritemtica Modular](#operaciones-mediante-aritemtica-modular)
+  - [Leer String](#leer-string)
+  - [Limpiar  buffer](#limpiar--buffer)
+- [Manipulacion de Bits](#manipulacion-de-bits)
+  - [Propiedades](#propiedades)
+  - [Bitset (STL)](#bitset-stl)
+  - [Entero a Binario](#entero-a-binario)
+  - [Binario a Entero](#binario-a-entero)
+  - [Operaciones Basicas con bitset](#operaciones-basicas-con-bitset)
+  - [Código de Gray](#código-de-gray)
+- [Divisibilidad](#divisibilidad)
+  - [Obtener la cantidad de divisores](#obtener-la-cantidad-de-divisores)
+- [Números primos](#números-primos)
+  - [Criba de Eratostenes](#criba-de-eratostenes)
+  - [Contar primos en un rango](#contar-primos-en-un-rango)
+  - [Encontrar primos en un rango](#encontrar-primos-en-un-rango)
+  - [Pruebas de Primalidad](#pruebas-de-primalidad)
+  - [Factorización de enteros](#factorización-de-enteros)
+- [Búsqueda Binaria](#búsqueda-binaria)
+  - [Iterativa](#iterativa)
+  - [Búsqueda Binaria STL](#búsqueda-binaria-stl)
+  - [Por Intervalos](#por-intervalos)
+  - [Búsqueda Ternaria](#búsqueda-ternaria)
+- [STL](#stl)
+  - [Vectores](#vectores)
+  - [Listas Ligadas](#listas-ligadas)
+  - [Colas](#colas)
+  - [Pila](#pila)
+  - [Deque](#deque)
+  - [Set](#set)
+  - [Map](#map)
+  - [Cola de Prioridad](#cola-de-prioridad)
+- [Heap](#heap)
+- [Grafos](#grafos)
+  - [Grafo No Ponderado](#grafo-no-ponderado)
+    - [Plantilla](#plantilla)
+    - [Búsqueda en Profundidad (DFS)](#búsqueda-en-profundidad-dfs)
+    - [Búsqueda en Anchura (BFS)](#búsqueda-en-anchura-bfs)
+    - [Componentes Conexas](#componentes-conexas)
+    - [Puentes](#puentes)
+    - [Puntos de articulación](#puntos-de-articulación)
+    - [Encontrar ciclos](#encontrar-ciclos)
+    - [Bipartito](#bipartito)
+    - [Camino Euleriano](#camino-euleriano)
+    - [Oredenamiento Topológico](#oredenamiento-topológico)
+  - [Grafos ponderados](#grafos-ponderados)
+    - [Plantilla](#plantilla-1)
+  - [Camino Más Corto](#camino-más-corto)
+    - [Dijkstra](#dijkstra)
+    - [Bellman-Ford](#bellman-ford)
+  - [BFS/0-1](#bfs0-1)
+  - [Floyd-Warshall](#floyd-warshall)
+  - [Minimum Spanning Trees](#minimum-spanning-trees)
+    - [Kruskal](#kruskal)
+  - [Disjoint Set](#disjoint-set)
+    - [Plantilla](#plantilla-2)
+    - [Union By Rank](#union-by-rank)
+    - [Union By Size](#union-by-size)
+  - [Lowest Common Ancestor (Version no generica)](#lowest-common-ancestor-version-no-generica)
+- [Segment Tree](#segment-tree)
+  - [Plantilla (Segment Tree)](#plantilla-segment-tree)
+    - [Ejemplos de modificaciones de Segment Tree](#ejemplos-de-modificaciones-de-segment-tree)
+    - [Funciones de búsqueda](#funciones-de-búsqueda)
+- [Búsqueda en tableros](#búsqueda-en-tableros)
+- [Árboles Binarios](#árboles-binarios)
+  - [A partir de una cadena preorden](#a-partir-de-una-cadena-preorden)
+  - [De búsqueda](#de-búsqueda)
+    - [Métodos](#métodos)
+  - [AVL](#avl)
+    - [Métodos](#métodos-1)
+- [Trie](#trie)
+    - [Métodos](#métodos-2)
+- [Permutaciones](#permutaciones)
+- [Combinaciones](#combinaciones)
+- [Álgebra Lineal](#álgebra-lineal)
+  - [Eliminación Gausseana](#eliminación-gausseana)
+  - [Validar Solución](#validar-solución)
+  - [Obtener soluciones](#obtener-soluciones)
+  - [Transformación Lineal](#transformación-lineal)
+  - [Exponenciación de Matrices](#exponenciación-de-matrices)
+- [Algoritmo de Mo](#algoritmo-de-mo)
+- [Algoritmo de Meet in the Middle](#algoritmo-de-meet-in-the-middle)
+- [Transformada Rapida de Fourier](#transformada-rapida-de-fourier)
+- [Algoritmos de Strings](#algoritmos-de-strings)
+  - [Knuth-Morris-Pratt KMP](#knuth-morris-pratt-kmp)
+  - [Algoritmo de Manacher](#algoritmo-de-manacher)
+  - [Longest Common Subsequence](#longest-common-subsequence)
+- [Fenwick Tree](#fenwick-tree)
+  - [Spanning Tree](#spanning-tree)
+- [Knapsack](#knapsack)
+- [Rootaear un árbol desde el centro](#rootaear-un-árbol-desde-el-centro)
+- [Identificar dos arboles isomórficos](#identificar-dos-arboles-isomórficos)
+- [Lowest Common Ancestor](#lowest-common-ancestor)
+- [Algoritmo de Trajan para Componentes Fuertemente Conexos](#algoritmo-de-trajan-para-componentes-fuertemente-conexos)
+- [Problema del Agente Viajero DP O($n^2 2^n$)](#problema-del-agente-viajero-dp-on2-2n)
+- [Máximo Flujo Ford-Fulkerson](#máximo-flujo-ford-fulkerson)
+- [Exponenciación Binaria de Matrices](#exponenciación-binaria-de-matrices)
+- [Matemáticas](#matemáticas)
+- [Probabliidad](#probabliidad)
+  - [Sucesiones](#sucesiones)
+  - [Uso Ángulos](#uso-ángulos)
+  - [Teorema del residuo chino](#teorema-del-residuo-chino)
+  - [Criba de Eratóstenes Comprimida O(n log log n)](#criba-de-eratóstenes-comprimida-on-log-log-n)
+  - [Función Totiente de Euler con Criba](#función-totiente-de-euler-con-criba)
+  - [Máximo Comun Divisor y Mínimo común múltiplo (GCD y LCM)](#máximo-comun-divisor-y-mínimo-común-múltiplo-gcd-y-lcm)
+  - [Módulo](#módulo)
+    - [pow(x,n) MOD m](#powxn-mod-m)
+    - [Inversa Modular](#inversa-modular)
+  - [Factorización de Primos](#factorización-de-primos)
+  - [Saber si son Coprimos](#saber-si-son-coprimos)
+  - [Test Rabin Miller](#test-rabin-miller)
+- [Geometria](#geometria)
+  - [Retornar el ángulo más pequeño entre dos vectores](#retornar-el-ángulo-más-pequeño-entre-dos-vectores)
+  - [Área de la interseccion de dos circulos](#área-de-la-interseccion-de-dos-circulos)
+  - [Punto de intersección entre dos circulos](#punto-de-intersección-entre-dos-circulos)
+  - [Puntos más cercanos](#puntos-más-cercanos)
+  - [Determinar si 3 puntos son coliniales](#determinar-si-3-puntos-son-coliniales)
+  - [Determinar si puntos 3D son coplanos](#determinar-si-puntos-3d-son-coplanos)
+  - [Intereseccion de una línea con un círculo](#intereseccion-de-una-línea-con-un-círculo)
+  - [Convertir puntos a forma general](#convertir-puntos-a-forma-general)
+  - [Distancia entre coordenadas geográficas](#distancia-entre-coordenadas-geográficas)
+  - [Área de Triángulo](#área-de-triángulo)
+  - [Intersección punto con Circulo](#intersección-punto-con-circulo)
+  - [Rotar Puntos](#rotar-puntos)
+- [Convex Hull](#convex-hull)
+
 
 # Respuestas del problema
 
@@ -50,17 +198,17 @@ Levanta tu mano y pide al staff que te den un globo.
 
 # Comandos de Compilación desde Terminal
 
-Considere $X$ como la letra del problema, se recomienda nombrar el archivo como $X.cpp$,por ejemplo si se esta resolviendo el problema $B$, el nombre del archivo será $B.cpp$.
+Considere $X$ como la letra del problema, se recomienda nombrar el archivo como $X.cpp$, por ejemplo si se esta resolviendo el problema $B$, el nombre del archivo será $B.cpp$.
 
 ## Linux
 
-### Compilar
+### Compilar <!-- omit in toc -->
 
 ```bash
 g++ -o X X.cpp
 ```
 
-### Ejecutar
+### Ejecutar <!-- omit in toc -->
 
 ```bash
 ./X
@@ -68,13 +216,13 @@ g++ -o X X.cpp
 
 ## Windows
 
-### Compilar
+### Compilar <!-- omit in toc -->
 
 ```bash
 g++ -o X.exe X.cpp
 ```
 
-### Ejecutar
+### Ejecutar <!-- omit in toc -->
 
 ```bash
 X.exe
@@ -82,13 +230,13 @@ X.exe
 
 ## Mac OS X
 
-### Compilar
+### Compilar <!-- omit in toc -->
 
 ```bash
 g++ -o X X.cpp
 ```
 
-### Ejecutar
+### Ejecutar <!-- omit in toc -->
 
 ```bash
 ./X
@@ -187,10 +335,10 @@ while(cin>>x){
 ```cpp
 double pi = 3.14159265358979323846;    
 
-cout << fixed << setprecision(5) << pi << endl;
+cout << fixed << setprecision(5) << pi << endl; // Mostrará 3.14159
 ```
 
-# Exponenciacion Binaria
+# Exponenciación Binaria
 
 La operación $a^b$ en la gran mayoria de librerias se implementa en $O(b)$, sin embargo si expersa b en base 2 (binario) se puede realizar en $O(log b)$.
 
@@ -255,7 +403,7 @@ getline(cin,s); // Con espacios
 
 ## Limpiar  buffer
 
-El usar cin independientemente del tipo de dato que se lea, guardar siempre en el buffer un salto de linea, el cual al querer usar un getline posteriormente nos puede generar problemas.
+El usar cin independientemente del tipo de dato que se lea, guardar siempre en el buffer un salto de línea, el cual al querer usar un getline posteriormente nos puede generar problemas.
 
 ```cpp
 cin >> edad;
@@ -393,7 +541,7 @@ bits operator-(const bits &x, const bits &y) {
     return r;
 }
 
-// MULTIPLICACION
+// MULTIPLICACIÓN
 bits operator*(const bits &x, const bits &y) {
     bits r,c;
     for (int i = 0; i < MXSZ; i++) {
@@ -405,14 +553,14 @@ bits operator*(const bits &x, const bits &y) {
     return r;
 }
 
-//Requerido para division
+//Requerido para división
 bool operator>=(const bits &x, const bits &y){
     for(int i = MXSZ - 1; i >= 0; i--)
        if(x[i] != y[i]) return (x[i] > y[i]);
     return 1;
 }
 
-// DIVISION
+// DIVISIÓN
 bits operator/(const bits &x, const bits &y) {
     bits r;
     bits c = x;
@@ -426,7 +574,7 @@ bits operator/(const bits &x, const bits &y) {
 }
 
 
-// MODULO
+// Módulo
 bits operator%(const bits &x, const bits &y) {
     bits r = x;
     for (int i = MXSZ - 1; i >= 0; i--)
@@ -730,7 +878,7 @@ bool MillerRabin(u64 n) {
 
 Los algoritmos para factorizar un número primo suelen ser bastantes lentos, por lo que se recomiendo aplicar una prueba de primalidad antes de realizar cualquiera de estos algoritmos.
 
-Factorización de Rueda. $O(\sqrt n))$. Esto se le tiene que agregar el calculo de numeros primos, con una Criba de Erastotenes, por ejemplo.
+Factorización de Rueda. $O(\sqrt n))$. Esto se le tiene que agregar el calculo de numeros primos, con una Criba de Eratóstenes, por ejemplo.
 
 ```cpp
 vector<long long> primes;
@@ -792,7 +940,7 @@ pair<int,int> fermat(int n) {
 }
 ```
 
-# Busqueda Binaria
+# Búsqueda Binaria
 
 ## Iterativa
 
@@ -814,14 +962,14 @@ int binarySearch(vector<int> v, int val) {
 }
 ```
 
-## Busqueda Binaria STL
+## Búsqueda Binaria STL
 
 ```cpp
 bool exist(vector<int> v, int val){
     return binary_search(v.begin(),v.end(),val);
 }
 
-// Busqueda Binaria
+// Búsqueda Binaria
 int binarySearch(const vector<int> &v, int val) {
     auto it = lower_bound(v.begin(), v.end(), val);
     if (it != v.end() && *it == val)
@@ -873,7 +1021,7 @@ int busquedaBinaria(vector<int> &v, int l, int r, int val) {
 }
 ```
 
-## Busqueda Ternaria
+## Búsqueda Ternaria
 
 Dada una función $f(x)$ que es unimodal en un rango $[l,r]$. Una función  unimodal se refiere a uno de los siguientes comportamientos:
 
@@ -1224,7 +1372,7 @@ int main(){
 }
 ```
 
-### Busqueda en Profundidad (DFS)
+### Búsqueda en Profundidad (DFS)
 
 ```cpp
 vb vsisted(n,false);
@@ -1239,7 +1387,7 @@ void dfs(T u, vb& visited) {
 }
 ```
 
-### Busqueda en Anchura (BFS)
+### Búsqueda en Anchura (BFS)
 
 ```cpp
 vb vsisted(n,false);
@@ -1529,7 +1677,7 @@ vi eulerianPath() {
 }
 ```
 
-### Oredenamiento Topologico
+### Oredenamiento Topológico
 
 Ordenar los nodos de un grafo dirigido de manera que ningún nodo preceda a sus nodos dependientes,garantiza que se siga un orden coherente y sin conflictos en situaciones en las que el orden es esencial.
 
@@ -2081,7 +2229,7 @@ int main() {
 
 Un Segment Tree es una estructura de datos que permite hacer consultas eficientes sobre intervalos en un arreglo, como hallar la suma o el máximo en un rango dado.
 
-## Plantilla
+## Plantilla (Segment Tree)
 
 ```cpp
 template<typename T>
@@ -2188,7 +2336,7 @@ int main(){
 }
 ```
 
-Algunos ejemplos de modificaciones de Segment Tree
+### Ejemplos de modificaciones de Segment Tree 
 
 ```cpp
 // Guarda la suma en rangos
@@ -2207,9 +2355,9 @@ T operation(T& a, T& b) {
 }
 ```
 
-### Funciones de busqueda
+### Funciones de búsqueda
 
-Regresar el indice del arbol que contenga exactamente ese valor
+Regresar el indice del árbol que contenga exactamente ese valor
 
 ```cpp
 int find(T& val) {
@@ -2229,7 +2377,7 @@ int find(int v, int l, int r, T& val) {
 }
 ```
 
-Encontrar el primer valor que sea mayor o igual en el arbol
+Encontrar el primer valor que sea mayor o igual en el árbol
 
 ```cpp
 int lower_bound(T& val) {
@@ -2248,7 +2396,7 @@ int lower_bound(int v, int l, int r, T& val) {
 }
 ```
 
-Encontrar el primer valor que sea estrictamente mayor en el arbol
+Encontrar el primer valor que sea estrictamente mayor en el árbol
 
 ```cpp
 int upper_bound(T& val) {
@@ -2268,7 +2416,7 @@ int upper_bound(int v, int l, int r, T& val) {
 }
 ```
 
-# Busqueda en tableros
+# Búsqueda en tableros
 
 ```cpp
 struct Celda {
@@ -2360,7 +2508,7 @@ int main() {
 
 ```
 
-# Arboles Binarios
+# Árboles Binarios
 
 ## A partir de una cadena preorden
 
@@ -2462,7 +2610,7 @@ int main() {
 }
 ```
 
-## De busqueda
+## De búsqueda
 
 ```cpp
 struct Nodo {
@@ -2641,7 +2789,7 @@ int main() {
 }
 ```
 
-### Metodos
+### Métodos
 
 | Función       | Descripción                                                                                                                                                                                     |
 |---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -2770,7 +2918,7 @@ int main() {
     avl->push(25);
 
 
-    cout << "Preorden del arbol AVL construido es: ";
+    cout << "Preorden del árbol AVL construido es: ";
     avl->preorden(avl->raiz);
     cout << endl;
 
@@ -2778,7 +2926,7 @@ int main() {
 }
 ```
 
-### Metodos
+### Métodos
 
 | Función | Descripción |
 | ------- | ----------- |
@@ -2889,7 +3037,7 @@ private:
 };
 ```
 
-### Metodos
+### Métodos
 
 | Método | Descripción |
 | ------ | ----------- |
@@ -2973,7 +3121,7 @@ vector<vector<int>> getCombinations(const vector<int>& nums, int k) {
 
 ```
 
-# Algebra Lineal
+# Álgebra Lineal
 
 ## Eliminación Gausseana
 
@@ -3409,7 +3557,7 @@ int main() {
 
 ## Knuth-Morris-Pratt KMP
 
-Busqueda de patrones en String en O(n + m)
+Búsqueda de patrones en String en O(n + m)
 
 ```cpp
 vector<int> computeLPSArray(const string& pattern) {
@@ -3770,7 +3918,7 @@ int main() {
 }
 ```
 
-# Rootaear un arbol desde el centro
+# Rootaear un árbol desde el centro
 
 ```cpp
 #include <iostream>
@@ -3869,7 +4017,7 @@ int main() {
 }
 ```
 
-# Identificar dos arboles isomorficos
+# Identificar dos arboles isomórficos
 
 ```cpp
 
@@ -4149,7 +4297,7 @@ int main() {
 }
 ```
 
-# Maximo Flujo Ford-Fulkerson
+# Máximo Flujo Ford-Fulkerson
 
 ```cpp
 #include <iostream>
@@ -4249,7 +4397,7 @@ int main() {
 
 ```
 
-# Exponenciacion Binaria de Matrices
+# Exponenciación Binaria de Matrices
 
 ```cpp
 typedef vector<vector<int>> Matrix;
@@ -4361,7 +4509,7 @@ Matrix matrixPower(const Matrix &matrix, int n) {
 11. **Números de Stirling de Segundo Tipo**: Estos números cuentan el número de formas distintas de dividir un conjunto de \( n \) elementos en \( k \) conjuntos no vacíos.
     - Fórmula: Los números de Stirling de Segundo Tipo tienen una fórmula recursiva.
 
-## Uso Angulos
+## Uso Ángulos
 
 ```cpp
 #include <iostream>
@@ -4541,7 +4689,7 @@ bool esPrimo(long n) {
 }
 ```
 
-## Criba de Erastotenes Comprimida O(n log log n)
+## Criba de Eratóstenes Comprimida O(n log log n)
 
 ```cpp
 const double NUM_BITS = 128.0;
@@ -4588,7 +4736,7 @@ int main() {
 }
 ```
 
-## Funcion Toteinica de Euler con Criba
+## Función Totiente de Euler con Criba
 
 ```cpp
 vector<int> sieve(int limit) {
@@ -4648,7 +4796,7 @@ int main() {
 }
 ```
 
-## Maximo y Minimo Comun Divisor (GCD y LCD)
+## Máximo Comun Divisor y Mínimo común múltiplo (GCD y LCM)
 
 ```cpp
 long gcd(long a, long b) {
@@ -4660,7 +4808,7 @@ long lcm(long a, long b) {
 }
 ```
 
-## Modulo
+## Módulo
 
 ### pow(x,n) MOD m
 
@@ -4751,7 +4899,7 @@ int main() {
 }
 ```
 
-## Factorizacion de Primos
+## Factorización de Primos
 
 ```cpp
 vector<long long> primeFactorization(long long n);
@@ -4871,7 +5019,7 @@ print(isPrime(205561530235962095930138512256047424384916810786171737181163))
 
 # Geometria
 
-## Retornar el angulo mas pequeño entre dos vectores
+## Retornar el ángulo más pequeño entre dos vectores
 
 ```cpp
 const double PI = 3.14159265358979323846;
@@ -4934,7 +5082,7 @@ int main() {
 }
 ```
 
-## Area de la interseccion de dos circulos
+## Área de la interseccion de dos circulos
 
 ```cpp
 const double EPS = 1e-6;
@@ -5044,7 +5192,7 @@ int main() {
 }
 ```
 
-## Punto de interesccion entre dos circulos
+## Punto de intersección entre dos circulos
 
 ```cpp
 const double EPS = 0.0000001;
@@ -5144,7 +5292,7 @@ int main() {
 }
 ```
 
-## Puntos mas cercanos
+## Puntos más cercanos
 
 ```cpp
 using namespace std;
@@ -5252,7 +5400,7 @@ int main() {
 
 ## Determinar si 3 puntos son coliniales
 
-Estan en el misma linea
+Estan en el misma línea
 
 ```cpp
 const double EPS = 1e-9;
@@ -5348,7 +5496,7 @@ int main() {
 }
 ```
 
-## Intereseccion de una linea con un circulo
+## Intereseccion de una línea con un círculo
 
 ```cpp
 const double EPS = 1e-9;
@@ -5450,7 +5598,7 @@ int main() {
 }
 ```
 
-## Distancia entre coordenadas geograficas
+## Distancia entre coordenadas geográficas
 
 ```cpp
 
@@ -5466,7 +5614,7 @@ double dist(double lat1, double lon1, double lat2, double lon2) {
 }
 ```
 
-## Area de Triangulo
+## Área de Triángulo
 
 ```cpp
 double triangleArea(double side1, double side2, double side3) {
@@ -5502,7 +5650,7 @@ int main() {
 }
 ```
 
-## Interseccion punto con Circulo
+## Intersección punto con Circulo
 
 Given a circle and a point around or inside the circle we wish to find place(s) of intersection
 of the lines from the point which are tangent to the circle.
