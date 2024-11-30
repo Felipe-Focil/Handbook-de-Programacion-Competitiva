@@ -130,7 +130,7 @@
   - [Uso Ángulos](#uso-ángulos)
   - [Teorema del residuo chino](#teorema-del-residuo-chino)
   - [Criba de Eratóstenes Comprimida O(n log log n)](#criba-de-eratóstenes-comprimida-on-log-log-n)
-  - [Función Toteinica de Euler con Criba](#función-toteinica-de-euler-con-criba)
+  - [Función Totiente de Euler con Criba](#función-totiente-de-euler-con-criba)
   - [Máximo Comun Divisor y Mínimo común múltiplo (GCD y LCM)](#máximo-comun-divisor-y-mínimo-común-múltiplo-gcd-y-lcm)
   - [Módulo](#módulo)
     - [pow(x,n) MOD m](#powxn-mod-m)
@@ -4736,7 +4736,7 @@ int main() {
 }
 ```
 
-## Función Toteinica de Euler con Criba
+## Función Totiente de Euler con Criba
 
 ```cpp
 vector<int> sieve(int limit) {
